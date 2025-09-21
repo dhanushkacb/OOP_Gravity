@@ -217,4 +217,32 @@ class Attendance:
                 db_cursor.execute("DELETE FROM attendance WHERE attendance_id = %s", (attendance_id,))
             db_conn.commit()
             return True
+
+class TuteDistribution:
+    def __init__(self):
+        pass
+
+    def add_tute_distribution(self, student_id, class_id, remarks=None):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO tute_distribution (student_id, class_id, remarks) VALUES (%s, %s, %s)",
+                    (student_id, class_id, remarks)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_tute_distributions(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM tute_distribution")
+                distributions = db_cursor.fetchall()
+        return distributions
+    
+    def delete_tute_distribution(self, tute_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM tute_distribution WHERE tute_id = %s", (tute_id,))
+            db_conn.commit()
+            return True
         
