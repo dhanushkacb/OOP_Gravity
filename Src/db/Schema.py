@@ -106,3 +106,31 @@ class Students:
             db_conn.commit()
             return True
         
+class Classes:
+    def __init__(self):
+        pass
+
+    def add_class(self, teacher_id, subject, class_type, category, time_slot, classroom=None):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO classes (teacher_id, subject, class_type, category, time_slot, classroom) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (teacher_id, subject, class_type, category, time_slot, classroom)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_classes(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM classes")
+                classes = db_cursor.fetchall()
+        return classes
+    
+    def delete_class(self, class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM classes WHERE class_id = %s", (class_id,))
+            db_conn.commit()
+            return True 
+ 
