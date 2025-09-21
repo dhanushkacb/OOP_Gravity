@@ -133,4 +133,32 @@ class Classes:
                 db_cursor.execute("DELETE FROM classes WHERE class_id = %s", (class_id,))
             db_conn.commit()
             return True 
- 
+        
+class Enrollments:
+    def __init__(self):
+        pass
+
+    def add_enrollment(self, student_id, class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO enrollments (student_id, class_id) VALUES (%s, %s)",
+                    (student_id, class_id)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_enrollments(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM enrollments")
+                enrollments = db_cursor.fetchall()
+        return enrollments
+    
+    def delete_enrollment(self, enrollment_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM enrollments WHERE enrollment_id = %s", (enrollment_id,))
+            db_conn.commit()
+            return True
+        
