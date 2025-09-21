@@ -1,9 +1,10 @@
 #handle db connection and return when required
 import mysql.connector
 
-from db.Connection import Configuration
+from Src.db.Configuration import Configuration
 
 class Connection:
+    @staticmethod
     def Server():
         conn = mysql.connector.connect(
             host=Configuration.DB_SERVER,
@@ -11,7 +12,7 @@ class Connection:
             password=Configuration.DB_PASSWORD
         )
         return conn
-
+    @staticmethod
     def Database():
         conn = mysql.connector.connect(
             host=Configuration.DB_SERVER,
