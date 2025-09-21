@@ -3,6 +3,7 @@ from tkinter import messagebox
 from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
 from Src.log.Logger import Logger
+from Src.UserRegistration import open_user_registration
 
 class App:
     def __init__(self, main_window, role):
@@ -27,7 +28,7 @@ class App:
 
         # Configurations Menu (Admin only)
         config_menu = tk.Menu(menubar, tearoff=0)
-        config_menu.add_command(label="User Management", command=self.not_implemented)
+        config_menu.add_command(label="User Management", command=open_user_registration)
         config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
