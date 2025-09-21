@@ -62,6 +62,7 @@ if __name__ == "__main__":
     createDb=CreateDatabase()
     createDb.create_database()
     createDb.create_tables()
+    createDb.create_admin_user()
     Logger.log("Database and tables created successfully.")
     
     main_window = tk.Tk()

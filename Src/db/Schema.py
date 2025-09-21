@@ -1,5 +1,5 @@
 #create table store schema
-from Src.crypt import Security
+from Src.crypt.Security import Security
 from Src.db.Connection import Connection
 
 

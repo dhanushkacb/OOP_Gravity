@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
-from Src.db.Schema import USERS
+
+from Src.db.Schema import Users
 
 class LoginWindow:
     def __init__(self, root, on_login_success):
+        self._users = Users()
         self.root = root
         self.root.title("GravityCore Login")
         self.root.geometry("300x200")
@@ -22,9 +24,9 @@ class LoginWindow:
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
+        role = self._users.authenticate(username, password)
 
-        if username in USERS and USERS[username]["password"] == password:
-            role = USERS[username]["role"]
+        if role != None:
             self.on_login_success(self.root,role)
         else:
             messagebox.showerror("Error", "Invalid credentials!")
