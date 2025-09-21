@@ -246,3 +246,30 @@ class TuteDistribution:
             db_conn.commit()
             return True
         
+class BulkUploads:
+    def __init__(self):
+        pass
+
+    def add_bulk_upload(self, upload_type, file_name, uploaded_by):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO bulk_uploads (upload_type, file_name, uploaded_by) VALUES (%s, %s, %s)",
+                    (upload_type, file_name, uploaded_by)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_bulk_uploads(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM bulk_uploads")
+                uploads = db_cursor.fetchall()
+        return uploads
+    
+    def delete_bulk_upload(self, upload_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM bulk_uploads WHERE upload_id = %s", (upload_id,))
+            db_conn.commit()
+            return True
