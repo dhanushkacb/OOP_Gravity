@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from Src.db.Connection import Connection
 from Src.db.Configuration import Configuration
+from Src.crypt.Security import Security
+
 
 def open_user_registration():
     reg_window = tk.Toplevel()
@@ -48,15 +50,13 @@ def open_user_registration():
         if not username or username == "Enter username" or not password or password == "Enter password":
             messagebox.showerror("Error", "Username and password required")
             return
-
-        # Hash password (simple example, use a secure hash in production)
-        import hashlib
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-
+        
+        password_hash = Security.hash(password)
+        print("Hashed Password:", password_hash)  # For debugging; remove in production
         try:
-            conn = Connection.Server()
+            conn = Connection.Database()
             cursor = conn.cursor()
-            cursor.execute(f"USE {Configuration.DB_NAME}")
+            # cursor.execute(f"USE {Configuration.DB_NAME}")
             cursor.execute(
                 "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
                 (username, password_hash, role)

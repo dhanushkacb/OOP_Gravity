@@ -1,8 +1,8 @@
+import hashlib
 class Security:
 
     @staticmethod
-    def hash(text):
-        import hashlib
+    def hash(text):        
         return hashlib.sha256(text.encode()).hexdigest()
     
     @staticmethod
