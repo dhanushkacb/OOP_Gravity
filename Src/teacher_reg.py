@@ -1,260 +1,109 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-import mysql.connector
-import re
+from tkinter import messagebox
+import tkinter.ttk as ttk
 
-# --- Database Connection ---
-def connect_db():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="gravity_db"
-    )
 
-# --- Validations ---
-def validate_contact(new_value):
-    if new_value == "":
-        return True
-    if new_value.isdigit() and len(new_value) <= 10:
-        return True
-    return False
+# Dummy Teachers class (replace with DB later)
+class Teachers:
+    def add_teacher(self, name, subject, contact, email):
+        print(f"[DEBUG] Adding teacher -> Name: {name}, Subject: {subject}, Contact: {contact}, Email: {email}")
+        return True  # Always succeed for testing
 
-def validate_email(email):
-    if email == "":
-        return True
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    return re.match(pattern, email) is not None
 
-# --- Center Window ---
-def center_window(win, width, height):
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    x = int((screen_width - width) / 2)
-    y = int((screen_height - height) / 2)
-    win.geometry(f"{width}x{height}+{x}+{y}")
+class TeacherRegistration:
 
-# --- Clear Inputs ---
-def clear_inputs():
-    entry_name.delete(0, tk.END)
-    entry_subject.delete(0, tk.END)
-    entry_contact.delete(0, tk.END)
-    entry_email.delete(0, tk.END)
-    entry_search.delete(0, tk.END)
-    global selected_teacher_id
-    selected_teacher_id = None
+    def __init__(self, master):
+        # Create popup window
+        self.reg_window = tk.Toplevel(master)
+        self.reg_window.title("Teacher Registration")
+        self.reg_window.geometry("450x350")
+        self.reg_window.resizable(False, False)
 
-    # Enable Add button when form is cleared
-    btn_add.config(state="normal")
+        # Make sure this window closes the app if root is hidden
+        self.reg_window.protocol("WM_DELETE_WINDOW", master.destroy)
 
-    fetch_data()
+        self._teachers = Teachers()
 
-# --- Add New Teacher ---
-def add_teacher():
-    name = entry_name.get().strip()
-    subject = entry_subject.get().strip()
-    contact = entry_contact.get().strip()
-    email = entry_email.get().strip()
+        # Main frame for form
+        self.form_frame = tk.Frame(self.reg_window, padx=20, pady=20, relief=tk.RIDGE, borderwidth=2)
+        self.form_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-    if name == "" or subject == "":
-        messagebox.showerror("Error", "Name and Subject are required!", parent=root)
-        return
-    if contact == "":
-        messagebox.showerror("Error", "Contact is required!", parent=root)
-        return
-    if not contact.isdigit() or len(contact) != 10:
-        messagebox.showerror("Error", "Contact must be exactly 10 digits numeric!", parent=root)
-        return
-    if email != "" and not validate_email(email):
-        messagebox.showerror("Error", "Invalid Email format.", parent=root)
-        return
+        # Title label
+        tk.Label(self.form_frame, text="Teacher Registration", font=("Arial", 16, "bold")).grid(
+            row=0, column=0, columnspan=2, pady=(0, 15)
+        )
 
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO teachers(name, subject, contact_no, email)
-        VALUES (%s, %s, %s, %s)
-    """, (name, subject, contact, email))
-    conn.commit()
-    conn.close()
+        entry_width = 30
 
-    clear_inputs()
-    messagebox.showinfo("Success", "New teacher added successfully!", parent=root)
+        # Teacher Name
+        tk.Label(self.form_frame, text="Teacher Name:", anchor="w").grid(row=1, column=0, sticky="w", padx=10, pady=5)
+        self.name_entry = tk.Entry(self.form_frame, width=entry_width)
+        self.name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
-# --- Fetch Data ---
-def fetch_data(search_text=""):
-    for row in tree.get_children():
-        tree.delete(row)
+        # Subject
+        tk.Label(self.form_frame, text="Subject:", anchor="w").grid(row=2, column=0, sticky="w", padx=10, pady=5)
+        self.subject_entry = tk.Entry(self.form_frame, width=entry_width)
+        self.subject_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
-    conn = connect_db()
-    cursor = conn.cursor()
+        # Contact Number
+        tk.Label(self.form_frame, text="Contact Number:", anchor="w").grid(row=3, column=0, sticky="w", padx=10, pady=5)
+        self.contact_entry = tk.Entry(self.form_frame, width=entry_width)
+        self.contact_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
-    if search_text.strip() == "":
-        cursor.execute("SELECT teacher_id, name, subject, contact_no, email FROM teachers")
-    else:
-        query = """
-        SELECT teacher_id, name, subject, contact_no, email 
-        FROM teachers
-        WHERE name LIKE %s OR contact_no LIKE %s
-        """
-        like_pattern = f"%{search_text}%"
-        cursor.execute(query, (like_pattern, like_pattern))
+        # Email
+        tk.Label(self.form_frame, text="Email:", anchor="w").grid(row=4, column=0, sticky="w", padx=10, pady=5)
+        self.email_entry = tk.Entry(self.form_frame, width=entry_width)
+        self.email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-    rows = cursor.fetchall()
-    for index, row in enumerate(rows):
-        tag = 'evenrow' if index % 2 == 0 else 'oddrow'
-        tree.insert("", tk.END, values=row, tags=(tag,))
-    conn.close()
+        # Buttons
+        btn_frame = tk.Frame(self.form_frame)
+        btn_frame.grid(row=5, column=1, padx=10, pady=20, sticky="e")
 
-# --- Search ---
-def search_teacher():
-    search_text = entry_search.get().strip()
-    fetch_data(search_text)
+        self.submit_btn = tk.Button(
+            btn_frame,
+            text="Register",
+            command=self.register_teacher,
+            font=("Arial", 12, "bold"),
+            bg="#4CAF50",
+            fg="white",
+            relief=tk.RAISED,
+            width=12
+        )
+        self.submit_btn.pack(anchor="e")
 
-# --- Select Record for Update ---
-def select_teacher(event):
-    global selected_teacher_id
-    selected = tree.selection()
-    if not selected:
-        return
-    data = tree.item(selected[0])['values']
-    selected_teacher_id = data[0]
+        self.form_frame.columnconfigure(0, weight=0)
+        self.form_frame.columnconfigure(1, weight=1)
 
-    entry_name.delete(0, tk.END)
-    entry_name.insert(0, str(data[1]))
+    def register_teacher(self, event=None):
+        name = self.name_entry.get()
+        subject = self.subject_entry.get()
+        contact = self.contact_entry.get()
+        email = self.email_entry.get()
 
-    entry_subject.delete(0, tk.END)
-    entry_subject.insert(0, str(data[2]))
+        # Basic validations
+        if not name or not subject or not contact or not email:
+            messagebox.showerror("Error", "All fields are required")
+            return
 
-    entry_contact.delete(0, tk.END)
-    entry_contact.insert(0, str(data[3]))
+        if not contact.isdigit() or len(contact) != 10:
+            messagebox.showerror("Error", "Contact number must be 10 digits")
+            return
 
-    entry_email.delete(0, tk.END)
-    entry_email.insert(0, str(data[4]))
+        if "@" not in email or "." not in email:
+            messagebox.showerror("Error", "Invalid email address")
+            return
 
-    # Disable Add button when editing
-    btn_add.config(state="disabled")
+        if self._teachers.add_teacher(name, subject, contact, email):
+            messagebox.showinfo("Success", "Teacher registered successfully!")
+            self.reg_window.destroy()
+        else:
+            messagebox.showerror("Error", "Failed to register teacher.")
 
-# --- Update Teacher ---
-def update_teacher():
-    global selected_teacher_id
-    if not selected_teacher_id:
-        messagebox.showerror("Error", "Select a record to update", parent=root)
-        return
 
-    name = entry_name.get().strip()
-    subject = entry_subject.get().strip()
-    contact = entry_contact.get().strip()
-    email = entry_email.get().strip()
+# Run standalone as a clean popup
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    TeacherRegistration(root)
+    root.mainloop()
 
-    if name == "" or subject == "":
-        messagebox.showerror("Error", "Name and Subject are required!", parent=root)
-        return
-    if contact == "":
-        messagebox.showerror("Error", "Contact is required!", parent=root)
-        return
-    if not contact.isdigit() or len(contact) != 10:
-        messagebox.showerror("Error", "Contact must be exactly 10 digits numeric!", parent=root)
-        return
-    if email != "" and not validate_email(email):
-        messagebox.showerror("Error", "Invalid Email format.", parent=root)
-        return
-
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("""
-        UPDATE teachers
-        SET name=%s, subject=%s, contact_no=%s, email=%s
-        WHERE teacher_id=%s
-    """, (name, subject, contact, email, selected_teacher_id))
-    conn.commit()
-    conn.close()
-
-    clear_inputs()
-    messagebox.showinfo("Success", "Teacher record updated successfully!", parent=root)
-
-# --- Tkinter Window ---
-root = tk.Tk()
-root.title("Teachers Registration")
-center_window(root, 850, 550)
-
-# --- Input Frame ---
-frame_input = tk.Frame(root, pady=10)
-frame_input.pack(padx=10, pady=10, anchor="w")
-
-label_width = 12
-entry_width = 40
-
-# --- Entry Widgets ---
-tk.Label(frame_input, text="Name:", width=label_width, anchor="w").grid(row=0, column=0, padx=5, pady=5, sticky="w")
-entry_name = tk.Entry(frame_input, width=entry_width)
-entry_name.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-tk.Label(frame_input, text="Subject:", width=label_width, anchor="w").grid(row=1, column=0, padx=5, pady=5, sticky="w")
-entry_subject = tk.Entry(frame_input, width=entry_width)
-entry_subject.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-vcmd = root.register(validate_contact)
-tk.Label(frame_input, text="Contact:", width=label_width, anchor="w").grid(row=2, column=0, padx=5, pady=5, sticky="w")
-entry_contact = tk.Entry(frame_input, validate="key", validatecommand=(vcmd, "%P"), width=entry_width)
-entry_contact.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-
-tk.Label(frame_input, text="Email:", width=label_width, anchor="w").grid(row=3, column=0, padx=5, pady=5, sticky="w")
-entry_email = tk.Entry(frame_input, width=entry_width)
-entry_email.grid(row=3, column=1, padx=5, pady=5, sticky="w")
-
-# --- Buttons Frame ---
-btn_frame = tk.Frame(frame_input, pady=20)
-btn_frame.grid(row=4, column=0, columnspan=2)
-
-btn_add = tk.Button(btn_frame, text="Add New", command=add_teacher, bg="green", fg="white")
-btn_add.pack(side="left", padx=10)
-
-btn_update = tk.Button(btn_frame, text="Update", command=update_teacher, bg="blue", fg="white")
-btn_update.pack(side="left", padx=10)
-
-btn_clear = tk.Button(btn_frame, text="Clear", command=clear_inputs, bg="orange", fg="white")
-btn_clear.pack(side="left", padx=10)
-
-# --- Search Frame ---
-search_frame = tk.Frame(root, pady=5)
-search_frame.pack(fill="x", padx=10)
-
-tk.Label(search_frame, text="Search by Name or Phone:", anchor="w").pack(side="left")
-entry_search = tk.Entry(search_frame, width=30)
-entry_search.pack(side="left", padx=5)
-tk.Button(search_frame, text="Search", command=search_teacher, bg="blue", fg="white").pack(side="left", padx=5)
-
-# --- Table Frame ---
-frame_table = tk.Frame(root)
-frame_table.pack(fill="both", expand=True, padx=10, pady=10)
-
-columns = ("ID", "Name", "Subject", "Contact", "Email")
-tree = ttk.Treeview(frame_table, columns=columns, show="headings")
-
-# Scrollbar
-scrollbar = ttk.Scrollbar(frame_table, orient="vertical", command=tree.yview)
-tree.configure(yscroll=scrollbar.set)
-scrollbar.pack(side="right", fill="y")
-
-# Treeview style
-style = ttk.Style()
-style.configure("Treeview", rowheight=25, font=('Arial', 11))
-tree.tag_configure('oddrow', background='#f9f9f9')
-tree.tag_configure('evenrow', background='#ffffff')
-
-# Headings
-for col in columns:
-    tree.heading(col, text=col, anchor="w")
-    tree.column(col, anchor="w", width=120)
-
-tree.pack(fill="both", expand=True)
-
-# Bind select
-tree.bind("<<TreeviewSelect>>", select_teacher)
-
-# --- Initial Data Load ---
-selected_teacher_id = None
-fetch_data()
-
-root.mainloop()
