@@ -105,6 +105,34 @@ class Students:
                 db_cursor.execute("DELETE FROM students WHERE student_id = %s", (student_id,))
             db_conn.commit()
             return True
+
+class ClassRoom:
+    def __init__(self):
+        pass
+
+    def add_classroom(self, room_code, capacity, has_ac=False, has_whiteboard=False, has_screen=False):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO classrooms (classroom_code, capacity, has_ac, has_whiteboard, has_screen) VALUES (%s, %s, %s, %s, %s)",
+                    (room_code, capacity, has_ac, has_whiteboard, has_screen)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_classrooms(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM classrooms")
+                classrooms = db_cursor.fetchall()
+        return classrooms
+    
+    def delete_classroom(self, classroom_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM classrooms WHERE classroom_id = %s", (classroom_id,))
+            db_conn.commit()
+            return True
         
 class Classes:
     def __init__(self):
