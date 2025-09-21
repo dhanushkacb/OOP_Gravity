@@ -189,3 +189,32 @@ class Payments:
                 db_cursor.execute("DELETE FROM payments WHERE payment_id = %s", (payment_id,))
             db_conn.commit()
             return True
+        
+class Attendance:
+    def __init__(self):
+        pass
+
+    def add_attendance(self, student_id, class_id, session_date, status):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO attendance (student_id, class_id, session_date, status) VALUES (%s, %s, %s, %s)",
+                    (student_id, class_id, session_date, status)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_attendance(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM attendance")
+                attendance = db_cursor.fetchall()
+        return attendance
+    
+    def delete_attendance(self, attendance_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM attendance WHERE attendance_id = %s", (attendance_id,))
+            db_conn.commit()
+            return True
+        
