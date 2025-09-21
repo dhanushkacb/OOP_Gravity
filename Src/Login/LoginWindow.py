@@ -25,7 +25,6 @@ class LoginWindow:
 
         if username in USERS and USERS[username]["password"] == password:
             role = USERS[username]["role"]
-            self.root.destroy()  # close login window
-            self.on_login_success(role)
+            self.on_login_success(self.root,role)
         else:
             messagebox.showerror("Error", "Invalid credentials!")
