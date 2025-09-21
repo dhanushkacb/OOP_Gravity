@@ -29,7 +29,7 @@ class App:
         # Configurations Menu (Admin only)
         config_menu = tk.Menu(menubar, tearoff=0)
         config_menu.add_command(label="User Management", command=self.open_user_registration)
-        config_menu.add_command(label="Classroom Management", command=self.open_classroom_registration)
+        config_menu.add_command(label="Class Room Management", command=self.open_classroom_registration)
         config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
@@ -75,8 +75,6 @@ if __name__ == "__main__":
     #init DB
     createDb=CreateDatabase()
     createDb.create_database()
-    createDb.create_tables()
-    createDb.create_admin_user()
     Logger.log("Database and tables created successfully.")
     
     main_window = tk.Tk()

@@ -11,6 +11,8 @@ class CreateDatabase:
         self.db_connection = Connection.Server()
         self.create_database()
         self.create_tables()
+        self.create_admin_user()
+        self.init_system_settings()
 
     def create_database(self):
         try:
@@ -155,6 +157,15 @@ class CreateDatabase:
             )
             """)
 
+            db_cursor.execute("""
+                CREATE TABLE IF NOT EXISTS system_settings (
+                setting_id INT AUTO_INCREMENT PRIMARY KEY,
+                setting_key VARCHAR(50) NOT NULL,
+                setting_value VARCHAR(100) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY uq_setting (setting_key, setting_value)
+            )
+            """)
 
         except Exception as e:
             print(f"Error creating tables: {e}")
@@ -175,3 +186,29 @@ class CreateDatabase:
                         Logger.log("Default admin user created with username 'admin'")
         except Exception as e:
             Logger.log(f"Error creating user: {e}")
+
+    def init_system_settings(self):
+        try:
+            with Connection.Database() as db_conn:
+                with db_conn.cursor() as db_cursor:
+                    default_settings = [
+                        ("USER_ROLE", "Admin"),
+                        ("USER_ROLE", "Staff"),
+                        ("CLS_TYPE", "Group"),
+                        ("CLS_TYPE", "Hall"),
+                        ("CLS_CATEGORY", "Theory"),
+                        ("CLS_CATEGORY", "Revision"),
+                    ]
+                    for key, value in default_settings:
+                        db_cursor.execute(
+                            """
+                            INSERT IGNORE INTO system_settings (setting_key, setting_value)
+                            VALUES (%s, %s)
+                            """,
+                            (key, value)
+                        )
+                    db_conn.commit()
+                    Logger.log("Default system settings initialized.")
+        except Exception as e:
+            Logger.log(f"Error initializing system settings: {e}")
+

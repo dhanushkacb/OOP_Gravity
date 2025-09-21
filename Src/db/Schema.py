@@ -301,3 +301,25 @@ class BulkUploads:
                 db_cursor.execute("DELETE FROM bulk_uploads WHERE upload_id = %s", (upload_id,))
             db_conn.commit()
             return True
+        
+class SystemSettings:
+    def __init__(self):
+        pass
+
+    def add_setting(self, setting_key, setting_value):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO system_settings (setting_key, setting_value) VALUES (%s, %s)",
+                    (setting_key, setting_value)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_settings(self, setting_key):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT setting_value FROM system_settings WHERE setting_key = %s", (setting_key))
+                settings = db_cursor.fetchall()
+        return settings
+    
