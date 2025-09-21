@@ -29,6 +29,7 @@ class App:
         # Configurations Menu (Admin only)
         config_menu = tk.Menu(menubar, tearoff=0)
         config_menu.add_command(label="User Management", command=self.open_user_registration)
+        config_menu.add_command(label="Classroom Management", command=self.open_classroom_registration)
         config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
@@ -56,7 +57,14 @@ class App:
             messagebox.showerror("Error", "Access denied! Admins only.")
             return
         UserRegistration()
-        
+
+    def open_classroom_registration(self):
+        if self.role != "Admin":
+            messagebox.showerror("Error", "Access denied! Admins only.")
+            return
+        from Src.ClassRoomRegister import ClassroomRegistration
+        ClassroomRegistration()
+
 def start_main_app(root, role):
     Logger.log("User logged in.")
     for widget in root.winfo_children():
