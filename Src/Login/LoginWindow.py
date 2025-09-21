@@ -3,10 +3,11 @@ from tkinter import messagebox
 from Src.db.Schema import USERS
 
 class LoginWindow:
-    def __init__(self, root):
+    def __init__(self, root, on_login_success):
         self.root = root
         self.root.title("GravityCore Login")
         self.root.geometry("300x200")
+        self.on_login_success = on_login_success
 
         tk.Label(root, text="Username").pack(pady=5)
         self.username_entry = tk.Entry(root)
@@ -25,9 +26,6 @@ class LoginWindow:
         if username in USERS and USERS[username]["password"] == password:
             role = USERS[username]["role"]
             self.root.destroy()  # close login window
-
-            main_root = tk.Tk()
-            app = App(main_root, role)
-            main_root.mainloop()
+            self.on_login_success(role)
         else:
             messagebox.showerror("Error", "Invalid credentials!")
