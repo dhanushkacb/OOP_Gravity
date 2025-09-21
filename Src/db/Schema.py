@@ -78,3 +78,31 @@ class Teachers:
             db_conn.commit()
             return True
         
+class Students:
+    def __init__(self):
+        pass
+
+    def add_student(self, name, registration_year, registration_month, contact_no=None, discount_percent=0.00, email=None, stream=None):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO students (name, registration_year, registration_month, contact_no, discount_percent, email, stream) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    (name, registration_year, registration_month, contact_no, discount_percent, email, stream)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_all_students(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("SELECT * FROM students")
+                students = db_cursor.fetchall()
+        return students
+    
+    def delete_student(self, student_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute("DELETE FROM students WHERE student_id = %s", (student_id,))
+            db_conn.commit()
+            return True
+        
