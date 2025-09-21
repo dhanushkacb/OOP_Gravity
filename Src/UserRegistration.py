@@ -1,75 +1,83 @@
 import tkinter as tk
 from tkinter import messagebox
-from Src.db.Connection import Connection
-from Src.db.Configuration import Configuration
-from Src.crypt.Security import Security
+from Src.config import Settings
+from Src.db.Schema import Users
+from Src.config.Settings import Settings
+import tkinter.ttk as ttk
 
+class UserRegistration:
 
-def open_user_registration():
-    reg_window = tk.Toplevel()
-    reg_window.title("User Registration")
-    reg_window.geometry("420x320")
-    reg_window.resizable(False, False)
+    def __init__(self):
+        self.reg_window = tk.Toplevel()
+        self.reg_window.title("User Registration")
+        self.reg_window.geometry("420x320")
+        self.reg_window.resizable(False, False)
 
-    # Main frame for form
-    form_frame = tk.Frame(reg_window, padx=20, pady=20, relief=tk.RIDGE, borderwidth=2)
-    form_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self._users = Users()
+        # Main frame for form
+        self.form_frame = tk.Frame(self.reg_window, padx=20, pady=20, relief=tk.RIDGE, borderwidth=2)
+        self.form_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # Title label
-    tk.Label(form_frame, text="User Registration", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=(0, 15))
+        # Title label
+        tk.Label(self.form_frame, text="User Registration", font=("Arial", 16, "bold")).grid(
+            row=0, column=0, columnspan=2, pady=(0, 15)
+        )
 
-    entry_width = 30
+        entry_width = 30
 
-    # Username
-    tk.Label(form_frame, text="Username:", anchor="w").grid(row=1, column=0, sticky="w", padx=10, pady=5)
-    username_entry = tk.Entry(form_frame, width=entry_width)
-    username_entry.grid(row=1, column=1, padx=10, pady=5)
-    username_entry.insert(0, "Enter username")
-    username_entry.bind("<FocusIn>", lambda e: username_entry.delete(0, tk.END))
-    username_entry.focus_set()
+        # Username
+        tk.Label(self.form_frame, text="Username:", anchor="w").grid(row=1, column=0, sticky="w", padx=10, pady=5)
+        self.username_entry = tk.Entry(self.form_frame, width=entry_width)
+        self.username_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
-    # Password
-    tk.Label(form_frame, text="Password:", anchor="w").grid(row=2, column=0, sticky="w", padx=10, pady=5)
-    password_entry = tk.Entry(form_frame, show="*", width=entry_width)
-    password_entry.grid(row=2, column=1, padx=10, pady=5)
-    password_entry.insert(0, "Enter password")
-    password_entry.bind("<FocusIn>", lambda e: password_entry.delete(0, tk.END))
-
-    # Role
-    tk.Label(form_frame, text="Role:", anchor="w").grid(row=3, column=0, sticky="w", padx=10, pady=5)
-    role_var = tk.StringVar(value="Staff")
-    role_menu = tk.OptionMenu(form_frame, role_var, "Admin", "Staff")
-    role_menu.config(width=25)
-    role_menu.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
-
-    def register_user(event=None):
-        username = username_entry.get()
-        password = password_entry.get()
-        role = role_var.get()
-
-        if not username or username == "Enter username" or not password or password == "Enter password":
-            messagebox.showerror("Error", "Username and password required")
-            return
+        # Password
+        tk.Label(self.form_frame, text="Password:", anchor="w").grid(row=2, column=0, sticky="w", padx=10, pady=5)
+        self.password_entry = tk.Entry(self.form_frame, show="*", width=entry_width)
+        self.password_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
         
-        password_hash = Security.hash(password)
-        print("Hashed Password:", password_hash)  # For debugging; remove in production
-        try:
-            conn = Connection.Database()
-            cursor = conn.cursor()
-            # cursor.execute(f"USE {Configuration.DB_NAME}")
-            cursor.execute(
-                "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
-                (username, password_hash, role)
-            )
-            conn.commit()
+        #Role
+        tk.Label(self.form_frame, text="Role:", anchor="w").grid(row=3, column=0, sticky="w", padx=10, pady=5)
+        self.role_var = tk.StringVar(value="Staff")
+        self.role_menu = ttk.Combobox(
+            self.form_frame,
+            textvariable=self.role_var,
+            values=["Admin", "Staff"],
+            width=27,
+            state="readonly"
+        )
+        self.role_menu.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+
+        btn_frame = tk.Frame(self.form_frame)
+        btn_frame.grid(row=4, column=1, padx=10, pady=20, sticky="e")
+
+        self.submit_btn = tk.Button(
+            btn_frame,
+            text="Register",
+            command=self.register_user,
+            font=("Arial", 12, "bold"),
+            bg="#4CAF50",
+            fg="white",
+            relief=tk.RAISED,
+            width=12
+        )
+        self.submit_btn.pack(anchor="e")
+        
+        self.form_frame.columnconfigure(0, weight=0)
+        self.form_frame.columnconfigure(1, weight=1)
+    
+    def register_user(self,event=None):
+        self.username = self.username_entry.get()
+        self.password = self.password_entry.get()
+        self.role = self.role_var.get()
+
+        if not self.username or not self.password:
+            messagebox.showerror("Error", "Username and password are required")
+            return
+
+        if self._users.add_user(self.username, self.password, self.role):
             messagebox.showinfo("Success", "User registered successfully!")
-            reg_window.destroy()
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to register user: {e}")
+            self.reg_window.destroy()
+        else:
+            messagebox.showerror("Error", "Failed to register user.")
 
-    # Register button
-    submit_btn = tk.Button(form_frame, text="Register", command=register_user, font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", relief=tk.RAISED)
-    submit_btn.grid(row=4, column=1, sticky="e", padx=10, pady=20)
-
-    # Bind Enter key to submit
-    reg_window.bind("<Return>", register_user)
+        

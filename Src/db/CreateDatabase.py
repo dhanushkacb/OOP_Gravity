@@ -57,6 +57,17 @@ class CreateDatabase:
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
+
+            db_cursor.execute("""
+                CREATE TABLE IF NOT EXISTS classrooms (
+                classroom_code VARCHAR(20) PRIMARY KEY,
+                capacity INT NOT NULL,
+                has_ac BOOLEAN DEFAULT FALSE, 
+                has_whiteboard BOOLEAN DEFAULT TRUE,
+                has_screen BOOLEAN DEFAULT FALSE
+                )
+          """)
+            
             db_cursor.execute("""
                 CREATE TABLE IF NOT EXISTS classes (
                 class_id INT AUTO_INCREMENT PRIMARY KEY,
