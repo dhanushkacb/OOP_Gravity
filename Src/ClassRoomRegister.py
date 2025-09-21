@@ -109,7 +109,6 @@ class ClassroomRegistration:
             self.tree.delete(row)
 
         classrooms = self._classrooms.get_all_classrooms()
-        print("Fetched classrooms:", classrooms)  # debug
         for c in classrooms:
             self.tree.insert("", "end", values=(
                 c["classroom_code"],
