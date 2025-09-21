@@ -322,4 +322,12 @@ class SystemSettings:
                 db_cursor.execute("SELECT setting_value FROM system_settings WHERE setting_key = %s", (setting_key))
                 settings = db_cursor.fetchall()
         return settings
+
+    def get_user_roles(self):
+        return self.get_settings("USER_ROLE")
     
+    def get_class_type(self):
+        return self.get_settings("CLASS_TYPE")
+    
+    def get_class_category(self):
+        return self.get_settings("CLASS_CATEGORY")
