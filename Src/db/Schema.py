@@ -17,6 +17,17 @@ class Users:
             return result[0]
         return None
     
+    def add_user(self, username, password, role):
+        password_hash = Security.hash(password)
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
+                    (username, password_hash, role)
+                )
+            db_conn.commit()
+            return True
+
     def get_all_users(self):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:

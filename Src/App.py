@@ -3,7 +3,7 @@ from tkinter import messagebox
 from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
 from Src.log.Logger import Logger
-from Src.UserRegistration import open_user_registration
+from Src.UserRegistration import UserRegistration
 
 class App:
     def __init__(self, main_window, role):
@@ -28,7 +28,7 @@ class App:
 
         # Configurations Menu (Admin only)
         config_menu = tk.Menu(menubar, tearoff=0)
-        config_menu.add_command(label="User Management", command=open_user_registration)
+        config_menu.add_command(label="User Management", command=self.open_user_registration)
         config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
@@ -51,6 +51,12 @@ class App:
     def not_implemented(self):
         messagebox.showinfo("Info", "This feature is not implemented yet!")
           
+    def open_user_registration(self):
+        if self.role != "Admin":
+            messagebox.showerror("Error", "Access denied! Admins only.")
+            return
+        UserRegistration()
+        
 def start_main_app(root, role):
     Logger.log("User logged in.")
     for widget in root.winfo_children():
