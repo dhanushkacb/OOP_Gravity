@@ -32,9 +32,3 @@ class CreateDatabase:
             """)
         except Exception as e:
             print(f"Error creating tables: {e}")
-
-
-
-createDb=CreateDatabase()
-createDb.create_database()
-createDb.create_tables()
