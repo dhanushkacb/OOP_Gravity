@@ -30,7 +30,7 @@ class Users:
 
     def get_all_users(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
                 users = db_cursor.fetchall()
         return users
@@ -66,7 +66,7 @@ class Teachers:
     
     def get_all_teachers(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM teachers")
                 teachers = db_cursor.fetchall()
         return teachers
@@ -94,7 +94,7 @@ class Students:
     
     def get_all_students(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM students")
                 students = db_cursor.fetchall()
         return students
@@ -122,8 +122,8 @@ class ClassRoom:
     
     def get_all_classrooms(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
-                db_cursor.execute("SELECT * FROM classrooms")
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT classroom_code, capacity, has_ac, has_whiteboard, has_screen FROM classrooms")
                 classrooms = db_cursor.fetchall()
         return classrooms
     
@@ -150,7 +150,7 @@ class Classes:
     
     def get_all_classes(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM classes")
                 classes = db_cursor.fetchall()
         return classes
@@ -178,7 +178,7 @@ class Enrollments:
     
     def get_all_enrollments(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM enrollments")
                 enrollments = db_cursor.fetchall()
         return enrollments
@@ -206,7 +206,7 @@ class Payments:
     
     def get_all_payments(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM payments")
                 payments = db_cursor.fetchall()
         return payments
@@ -234,7 +234,7 @@ class Attendance:
     
     def get_all_attendance(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM attendance")
                 attendance = db_cursor.fetchall()
         return attendance
@@ -262,7 +262,7 @@ class TuteDistribution:
     
     def get_all_tute_distributions(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM tute_distribution")
                 distributions = db_cursor.fetchall()
         return distributions
@@ -290,7 +290,7 @@ class BulkUploads:
     
     def get_all_bulk_uploads(self):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM bulk_uploads")
                 uploads = db_cursor.fetchall()
         return uploads
