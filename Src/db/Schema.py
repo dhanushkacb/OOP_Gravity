@@ -1,0 +1,5 @@
+#create table store schema
+USERS = {
+    "admin": {"password": "admin123", "role": "Admin"},
+    "staff": {"password": "staff123", "role": "Staff"}
+}
