@@ -1,6 +1,8 @@
 #Create DB and tables if not exists
+from Src.crypt import Security
 from Src.db.Configuration import Configuration
 from Src.db.Connection import Connection
+from Src.log.Logger import Logger
 
 class CreateDatabase:
     
@@ -144,3 +146,20 @@ class CreateDatabase:
 
         except Exception as e:
             print(f"Error creating tables: {e}")
+
+    def create_admin_user(self):
+        try:
+            with Connection.Database() as db_conn:
+                with db_conn.cursor() as db_cursor:
+                    db_cursor.execute("SELECT COUNT(*) FROM users WHERE user_id = 'admin'")
+                    admin_count = db_cursor.fetchone()[0]
+                    if admin_count == 0:
+                        admin_pwd_hash = Security.hash('123')
+                        db_cursor.execute(
+                            "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
+                            ("admin", admin_pwd_hash, "Admin")
+                        )
+                        db_conn.commit()
+                        Logger.Log("Default admin user created with username 'admin'")
+        except Exception as e:
+            Logger.Log(f"Error creating user: {e}")
