@@ -146,7 +146,7 @@ for col in columns:
 
 tree.pack(fill="both", expand=True)
 
-tk.Button(root, text="Delete Selected", command=delete_teacher, bg="red", fg="white").pack(pady=5)
+tk.Button(root, text=s"Delete Selected", command=delete_teacher, bg="red", fg="white").pack(pady=5)
 
 # Load Data
 fetch_data()
