@@ -8,9 +8,9 @@ class ClassroomRegistration:
     def __init__(self):
         self.reg_window = tk.Toplevel()
         self._classrooms = ClassRoom()
-        
+        self.selected_code = None
+
         self.reg_window.title("Classroom Registration")
-        #self.reg_window.geometry("600x400")
         self.reg_window.resizable(False, False)
 
         # Main frame
@@ -61,6 +61,8 @@ class ClassroomRegistration:
 
         columns = ("code", "capacity", "ac", "whiteboard", "screen")
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=6)
+        # Treeview selection binding
+        self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
         # Define headings
         self.tree.heading("code", text="Code")
@@ -100,7 +102,7 @@ class ClassroomRegistration:
 
         if self._classrooms.add_classroom(code, int(capacity), has_ac, has_whiteboard, has_screen):
             messagebox.showinfo("Success", "Classroom registered successfully!")
-            self.reg_window.destroy()
+            self.load_classrooms()
         else:
             messagebox.showerror("Error", "Failed to register classroom.")
 
@@ -117,6 +119,50 @@ class ClassroomRegistration:
                 "Yes" if c["has_whiteboard"] else "No",
                 "Yes" if c["has_screen"] else "No"
             ))
+
+    def on_tree_select(self, event):
+        selected = self.tree.selection()
+        if not selected:
+            return
+        item = self.tree.item(selected[0])
+        values = item["values"]
+
+        # Populate form fields
+        self.code_entry.config(state="normal") 
+        self.code_entry.delete(0, tk.END)
+        self.code_entry.insert(0, values[0])
+        self.code_entry.config(state="readonly") 
+        self.capacity_entry.delete(0, tk.END)
+        self.capacity_entry.insert(0, values[1])
+        self.has_ac_var.set(values[2] == "Yes")
+        self.has_whiteboard_var.set(values[3] == "Yes")
+        self.has_screen_var.set(values[4] == "Yes")
+
+        self.selected_code = values[0]  # Save for update
+
+        # Change button text to "Update Classroom"
+        self.submit_btn.config(text="Update Classroom", command=self.update_classroom)
+
+    def update_classroom(self, event=None):
+        code = self.code_entry.get().strip()
+        capacity = self.capacity_entry.get().strip()
+        has_ac = self.has_ac_var.get()
+        has_whiteboard = self.has_whiteboard_var.get()
+        has_screen = self.has_screen_var.get()
+
+        if not code or not capacity.isdigit():
+            messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
+            return
+
+        # Call your update method (implement this in your ClassRoom class)
+        if self._classrooms.update_classroom(self.selected_code, int(capacity), has_ac, has_whiteboard, has_screen):
+            messagebox.showinfo("Success", "Classroom updated successfully!")
+            self.load_classrooms()
+            self.clear_form()
+            self.submit_btn.config(text="Register Classroom", command=self.register_classroom)
+            self.selected_code = None
+        else:
+            messagebox.showerror("Error", "Failed to update classroom.")
 
     def clear_form(self):
         self.code_entry.delete(0, tk.END)

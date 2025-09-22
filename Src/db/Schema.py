@@ -127,6 +127,17 @@ class ClassRoom:
                 classrooms = db_cursor.fetchall()
         return classrooms
     
+    def update_classroom(self, room_code, capacity, has_ac, has_whiteboard, has_screen):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "UPDATE classrooms SET capacity = %s, has_ac = %s, has_whiteboard = %s, has_screen = %s WHERE classroom_code = %s",
+                    (capacity, has_ac, has_whiteboard, has_screen, room_code)
+                )
+            db_conn.commit()
+            return True
+
+    
     def delete_classroom(self, classroom_id):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
