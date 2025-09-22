@@ -71,6 +71,16 @@ class Teachers:
                 teachers = db_cursor.fetchall()
         return teachers
     
+    def update_teacher(self, teacher_id, name, subject, contact_no=None, email=None):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "UPDATE teachers SET name = %s, subject = %s, contact_no = %s, email = %s WHERE teacher_id = %s",
+                    (name, subject, contact_no, email, teacher_id)
+                )
+            db_conn.commit()
+            return True
+    
     def delete_teacher(self, teacher_id):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
