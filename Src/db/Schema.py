@@ -331,3 +331,12 @@ class SystemSettings:
     
     def get_class_category(self):
         return self.get_settings("CLASS_CATEGORY")
+    
+    def get_subjects(self):
+        return self.get_settings("SUBJECTS")
+    
+    def get_attendance_status(self):
+        return self.get_settings("ATTENDANCE")
+    
+    def get_upload_types(self):
+        return self.get_settings("UPLOAD_TYPE")

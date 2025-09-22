@@ -31,7 +31,7 @@ class CreateDatabase:
                 user_id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password_hash VARCHAR(255) NOT NULL,
-                role ENUM('Admin', 'Staff') NOT NULL,
+                role VARCHAR(100) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
@@ -75,8 +75,8 @@ class CreateDatabase:
                 class_id INT AUTO_INCREMENT PRIMARY KEY,
                 teacher_id INT NOT NULL,
                 subject VARCHAR(100) NOT NULL,
-                class_type ENUM('Group', 'Hall') NOT NULL,
-                category ENUM('Theory', 'Revision') NOT NULL,
+                class_type VARCHAR(100) NOT NULL,
+                category VARCHAR(100) NOT NULL,
                 time_slot VARCHAR(50) NOT NULL,
                 classroom VARCHAR(50),
                 FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
@@ -122,7 +122,7 @@ class CreateDatabase:
                 student_id INT NOT NULL,
                 class_id INT NOT NULL,
                 session_date DATE NOT NULL,
-                status ENUM('Present', 'Absent') DEFAULT 'Present',
+                status VARCHAR(100),
                 FOREIGN KEY (student_id) REFERENCES Students(student_id)
                     ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (class_id) REFERENCES classes(class_id)
@@ -148,7 +148,7 @@ class CreateDatabase:
             db_cursor.execute("""
                 CREATE TABLE IF NOT EXISTS bulk_uploads (
                 upload_id INT AUTO_INCREMENT PRIMARY KEY,
-                upload_type ENUM('Students', 'Payments'),
+                upload_type VARCHAR(100),
                 file_name VARCHAR(255),
                 uploaded_by INT,
                 uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -198,6 +198,15 @@ class CreateDatabase:
                         ("CLS_TYPE", "Hall"),
                         ("CLS_CATEGORY", "Theory"),
                         ("CLS_CATEGORY", "Revision"),
+                        ("SUBJECTS", "Physics"),
+                        ("SUBJECTS", "Mathematics"),
+                        ("SUBJECTS", "Chemistry"),
+                        ("SUBJECTS", "Biology"),
+                        ("SUBJECTS", "ICT"),
+                        ("ATTENDANCE", "Present"),
+                        ("ATTENDANCE", "Absent"),
+                        ("UPLOAD_TYPE", "Students"),
+                        ("UPLOAD_TYPE", "Payments")
                     ]
                     for key, value in default_settings:
                         db_cursor.execute(
