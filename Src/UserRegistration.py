@@ -2,13 +2,13 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from Src.BaseRegistration import BaseRegistration
 from Src.db.Schema import Users
+from Src.log.Logger import Logger
 
 class UserRegistration(BaseRegistration):
 
     def __init__(self, entity_name="User"):
         super().__init__(model=Users(), entity_name=entity_name, key_column="username")
         self.reg_window = tk.Toplevel()
-        self.selected_username = None
         
         self.reg_window.title(f"{entity_name} Registration")
         self.reg_window.resizable(False, False)
@@ -41,9 +41,9 @@ class UserRegistration(BaseRegistration):
         self.role_menu.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
 
         # --- Action Buttons ---
-        self.submit_btn = tk.Button(self.form_frame, text="Save", command=self.save_record)
-        self.delete_btn = tk.Button(self.form_frame, text="Delete", width=20, command=self.delete_record)
-        self.clear_btn = tk.Button(self.form_frame, text="Clear", command=self.clear_form)
+        self.submit_btn = tk.Button(self.form_frame, text="Save", width=15, command=self.save_record)
+        self.delete_btn = tk.Button(self.form_frame, text="Delete", width=15, command=self.delete_record)
+        self.clear_btn = tk.Button(self.form_frame, text="Clear", width=15, command=self.clear_form)
 
         self.submit_btn.grid(row=4, column=0, pady=20, padx=5, sticky="ew")
         self.delete_btn.grid(row=4, column=1, pady=20, padx=5, sticky="ew")
@@ -65,7 +65,6 @@ class UserRegistration(BaseRegistration):
         self.tree.pack(side="left", fill="both", expand=True)
         scrollbar_y.pack(side="right", fill="y")
 
-        # Tree headings
         self.tree.heading("username", text="Username")
         self.tree.heading("role", text="Role")
         self.tree.heading("delete", text="Delete")
@@ -76,34 +75,42 @@ class UserRegistration(BaseRegistration):
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
         self.tree.bind("<Button-1>", self.on_tree_item_click)
         self.tree.pack(fill="both", expand=True)
-        self.reg_window.bind("<Return>", self.save_record)
 
+        self.reg_window.bind("<Return>", self.save_record)
         self.load_records()
 
     # --- CRUD Operations ---
     def save_record(self, event=None):
-        username = self.username_entry.get().strip()
-        password = self.password_entry.get().strip()
-        role = self.role_var.get()
+        try:
+            username = self.username_entry.get().strip()
+            password = self.password_entry.get().strip()
+            role = self.role_var.get()
 
-        if not username or not password:
-            messagebox.showerror("Error", "Username and password are required")
-            return
+            if not username or not password:
+                messagebox.showerror("Error", "Username and password are required")
+                return
 
-        if self._model.insert(username, password, role):
-            messagebox.showinfo("Success", "User registered successfully!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to register user.")
+            if self._model.insert(username, password, role):
+                messagebox.showinfo("Success", "User registered successfully!")
+                self.load_records()
+            else:
+                messagebox.showerror("Error", "Failed to register user.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", "Could not save user. Please try again.")
 
     def load_records(self):
-        for row in self.tree.get_children():
-            self.tree.delete(row)
+        try:
+            for row in self.tree.get_children():
+                self.tree.delete(row)
 
-        users = self._model.select_all()
-        for u in users:
-            self.tree.insert("", "end", values=(u["username"], u["role"], "🗑️ Delete"))
-        self.clear_form()
+            users = self._model.select_all("username, role")
+            for u in users:
+                self.tree.insert("", "end", values=(u["username"], u["role"], "🗑️ Delete"))
+            self.clear_form()
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", "Could not load users.")
 
     def on_tree_select(self, event):
         selected = self.tree.selection()
@@ -121,31 +128,35 @@ class UserRegistration(BaseRegistration):
         self.role_var.set(values[1])
         self.password_entry.delete(0, tk.END)
 
-        self.selected_username = values[0]
+        self.selected_key = values[0]
         self.submit_btn.config(text="Update", command=self.update_record)
 
     def update_record(self, event=None):
-        username = self.username_entry.get().strip()
-        password = self.password_entry.get().strip()
-        role = self.role_var.get()
+        try:
+            username = self.username_entry.get().strip()
+            password = self.password_entry.get().strip()
+            role = self.role_var.get()
 
-        if not username:
-            messagebox.showerror("Error", "Username is required")
-            return
-        if not password:
-            messagebox.showerror("Error", "Password cannot be empty when updating")
-            return
+            if not username:
+                messagebox.showerror("Error", "Username is required")
+                return
+            if not password:
+                messagebox.showerror("Error", "Password cannot be empty when updating")
+                return
 
-        if self._model.update(username, password, role):
-            messagebox.showinfo("Success", "User updated successfully!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to update user.")
+            if self._model.update(username, password, role):
+                messagebox.showinfo("Success", "User updated successfully!")
+                self.load_records()
+            else:
+                messagebox.showerror("Error", "Failed to update user.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", "Could not update user. Please try again.")
 
     def clear_form(self):
         self.username_entry.config(state="normal")
         self.username_entry.delete(0, tk.END)
         self.password_entry.delete(0, tk.END)
         self.role_var.set("Staff")
-        self.selected_username = None
+        self.selected_key = None
         self.submit_btn.config(text="Save", command=self.save_record)
