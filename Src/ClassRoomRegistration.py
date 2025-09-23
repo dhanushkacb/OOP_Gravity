@@ -1,16 +1,17 @@
 import tkinter as tk
 from tkinter import messagebox,ttk
+from Src.BaseRegistration import BaseRegistration
 from Src.config.Settings import Settings
 from Src.db.Schema import ClassRoom
+from Src.log.Logger import Logger
 
-class ClassroomRegistration:
+class ClassroomRegistration(BaseRegistration):
 
-    def __init__(self):
+    def __init__(self, entity_name="Classroom",key_column="classroom_code"):
+        super().__init__(model=ClassRoom(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
-        self._classrooms = ClassRoom()
-        self.selected_code = None
-        
-        self.reg_window.title("Classroom Registration")
+
+        self.reg_window.title(f"{entity_name} Registration")
         self.reg_window.resizable(False, False)
 
         self.form_frame = tk.Frame(self.reg_window, padx=20, pady=20)
@@ -38,17 +39,19 @@ class ClassroomRegistration:
         self.submit_btn = tk.Button(
             self.form_frame,
             text="Save",
+            width=15,
             command=self.save_record
         )
         self.delete_btn = tk.Button(
             self.form_frame,
             text="Delete",
-            width=20,
+            width=15,
             command=self.delete_record
         )
         self.clear_btn = tk.Button(
             self.form_frame,
             text="Clear",
+            width=15,
             command=self.clear_form
         )
         self.submit_btn.grid(row=6, column=0, pady=20, padx=5, sticky="ew")
@@ -70,9 +73,6 @@ class ClassroomRegistration:
         self.tree.pack(side="left", fill="both", expand=True)
         scrollbar_y.pack(side="right", fill="y")
 
-        # Treeview selection
-        self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
-
         self.tree.heading("code", text="Code")
         self.tree.heading("capacity", text="Capacity")
         self.tree.heading("ac", text="AC")
@@ -83,62 +83,55 @@ class ClassroomRegistration:
         for col in columns:
             self.tree.column(col, width=100, anchor="center", stretch=True)
         self.tree.bind("<Button-1>", self.on_tree_item_click)
+        self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
         self.tree.pack(fill="both", expand=True)
+        self.reg_window.bind("<Return>", self.save_record)
 
         self.load_records()
 
-        self.reg_window.bind("<Return>", self.save_record)
-
     def save_record(self, event=None):
-        code = self.code_entry.get().strip()
-        capacity = self.capacity_entry.get().strip()
+        try:
+            code = self.code_entry.get().strip()
+            capacity = self.capacity_entry.get().strip()
 
-        # Validate input
-        if not code or not capacity.isdigit():
-            messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
-            return
+            # Validate input
+            if not code or not capacity.isdigit():
+                messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
+                return
 
-        # Convert checkboxes
-        has_ac = self.has_ac_var.get()
-        has_whiteboard = self.has_whiteboard_var.get()
-        has_screen = self.has_screen_var.get()
+            # Convert checkboxes
+            has_ac = self.has_ac_var.get()
+            has_whiteboard = self.has_whiteboard_var.get()
+            has_screen = self.has_screen_var.get()
 
-        if self._classrooms.add_classroom(code, int(capacity), has_ac, has_whiteboard, has_screen):
-            messagebox.showinfo("Success", "Classroom registered successfully!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to register classroom.")
+            if self._model.insert(code, int(capacity), has_ac, has_whiteboard, has_screen):
+                messagebox.showinfo("Success", "Record successfully saved!")
+                self.load_records()
+            else:
+                messagebox.showerror("Error", "Failed to register classroom.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not Save {self.entity_name}. Please try again.")
 
     def load_records(self):
-        for row in self.tree.get_children():
-            self.tree.delete(row)
+        try:
+            for row in self.tree.get_children():
+                self.tree.delete(row)
 
-        classrooms = self._classrooms.get_all_classrooms()
-        for c in classrooms:
-            self.tree.insert("", "end", values=(
-                c["classroom_code"],
-                c["capacity"],
-                "Yes" if c["has_ac"] else "No",
-                "Yes" if c["has_whiteboard"] else "No",
-                "Yes" if c["has_screen"] else "No",
-                "🗑️ Delete"
-            ))
-        self.clear_form()
-
-    def on_tree_item_click(self, event):
-        region = self.tree.identify("region", event.x, event.y)
-        if region != "cell":
-            return
-        
-        row_id = self.tree.identify_row(event.y)
-        col = self.tree.identify_column(event.x)
-        if not row_id or not col:
-            return
-        
-        values = self.tree.item(row_id, "values")
-        classroom_code = values[0]
-        if col == "#6":  # Delete column
-            self.delete_record(classroom_code)
+            classrooms = self._model.select_all()
+            for c in classrooms:
+                self.tree.insert("", "end", values=(
+                    c["classroom_code"],
+                    c["capacity"],
+                    "Yes" if c["has_ac"] else "No",
+                    "Yes" if c["has_whiteboard"] else "No",
+                    "Yes" if c["has_screen"] else "No",
+                    "🗑️ Delete"
+                ))
+            self.clear_form()
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not select all {self.entity_name}. Please try again.")
 
     def on_tree_select(self, event):
         selected = self.tree.selection()
@@ -157,41 +150,29 @@ class ClassroomRegistration:
         self.has_ac_var.set(values[2] == "Yes")
         self.has_whiteboard_var.set(values[3] == "Yes")
         self.has_screen_var.set(values[4] == "Yes")
-        self.selected_code = values[0]
+        self.selected_key = values[0]
         self.submit_btn.config(text="Update", command=self.update_record)
 
     def update_record(self, event=None):
-        code = self.code_entry.get().strip()
-        capacity = self.capacity_entry.get().strip()
-        has_ac = self.has_ac_var.get()
-        has_whiteboard = self.has_whiteboard_var.get()
-        has_screen = self.has_screen_var.get()
+        try:
+            code = self.code_entry.get().strip()
+            capacity = self.capacity_entry.get().strip()
+            has_ac = self.has_ac_var.get()
+            has_whiteboard = self.has_whiteboard_var.get()
+            has_screen = self.has_screen_var.get()
 
-        if not code or not capacity.isdigit():
-            messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
-            return
-
-        if self._classrooms.update_classroom(self.selected_code, int(capacity), has_ac, has_whiteboard, has_screen):
-            messagebox.showinfo("Success", "Classroom updated successfully!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to update classroom.")
-
-    def delete_record(self,classroom_code=None):
-        if messagebox.askyesno("Delete", f"Are you sure you want to delete?"):
-            selected = self.tree.selection()
-            if (not selected or self.selected_code == None) and classroom_code == None:
-                messagebox.showerror("Error", "Select a classroom to delete")
+            if not code or not capacity.isdigit():
+                messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
                 return
-            row_value = self.selected_code
-            if classroom_code != None:
-                row_value=classroom_code
 
-            if self._classrooms.delete_classroom(row_value):
-                messagebox.showinfo("Success", "Classroom deleted successfully!")
+            if self._model.update(self.selected_key, int(capacity), has_ac, has_whiteboard, has_screen):
+                messagebox.showinfo("Success", "Record updated successfully!")
                 self.load_records()
             else:
-                messagebox.showerror("Error", "Failed to delete classroom.")
+                messagebox.showerror("Error", "Failed to update record.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not update {self.entity_name}. Please try again.")
         
     def clear_form(self):
         self.code_entry.config(state="normal")
@@ -200,5 +181,5 @@ class ClassroomRegistration:
         self.has_ac_var.set(False)
         self.has_whiteboard_var.set(True)
         self.has_screen_var.set(False)
-        self.selected_code = None
+        self.selected_key = None
         self.submit_btn.config(text="Save", command=self.save_record)
