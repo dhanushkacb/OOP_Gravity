@@ -18,7 +18,7 @@ class BaseModel:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(f"DELETE FROM {self.table_name} WHERE {column} = %s", (value,))
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 class Users(BaseModel):
     def __init__(self):
@@ -33,7 +33,7 @@ class Users(BaseModel):
                     (username, password_hash, role)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def update(self, username, new_password, new_role):
         password_hash = Security.hash(new_password)
@@ -44,7 +44,7 @@ class Users(BaseModel):
                     (password_hash, new_role, username)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def authenticate(self, username, password):
         with Connection.Database() as db_conn:
@@ -65,7 +65,7 @@ class Users(BaseModel):
                     (password_hash, user_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
           
 class Teachers(BaseModel):
     def __init__(self):
@@ -89,7 +89,7 @@ class Teachers(BaseModel):
                     (name, subject, contact_no, email, teacher_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
         
 class Students(BaseModel):
@@ -125,7 +125,7 @@ class Students(BaseModel):
                     (name, registration_year, registration_month, contact_no, discount_percent, email, stream, student_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
         
 class ClassRoom(BaseModel):
     def __init__(self):
@@ -139,7 +139,7 @@ class ClassRoom(BaseModel):
                     (classroom_code, capacity, has_ac, has_whiteboard, has_screen)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def update(self, classroom_code, capacity, has_ac, has_whiteboard, has_screen):
         with Connection.Database() as db_conn:
@@ -148,7 +148,7 @@ class ClassRoom(BaseModel):
                     (capacity, has_ac, has_whiteboard, has_screen, classroom_code)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
         
 class Classes(BaseModel):
     def __init__(self):
@@ -180,7 +180,7 @@ class Classes(BaseModel):
                     (teacher_id, subject, class_type, category, time_slot, classroom, class_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Enrollments(BaseModel):
@@ -209,7 +209,7 @@ class Enrollments(BaseModel):
                     (student_id, class_id, enrolled_date, enrollment_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Payments(BaseModel):
@@ -243,7 +243,7 @@ class Payments(BaseModel):
                     (student_id, class_id, month, year, amount, payment_method, remarks, payment_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Attendance(BaseModel):
@@ -276,7 +276,7 @@ class Attendance(BaseModel):
                     (student_id, class_id, session_date, status, attendance_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class TuteDistribution(BaseModel):
@@ -309,7 +309,7 @@ class TuteDistribution(BaseModel):
                     (student_id, class_id, remarks, tute_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class BulkUploads(BaseModel):
@@ -342,7 +342,7 @@ class BulkUploads(BaseModel):
                     (upload_type, file_name, uploaded_by, upload_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 class SystemSettings:
     def __init__(self):
