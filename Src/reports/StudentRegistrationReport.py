@@ -11,7 +11,8 @@ class StudentRegistrationReport(BaseRegistration):
         super().__init__(model=Students(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
         self.reg_window.title(f"{entity_name} Generator")
-        self.reg_window.resizable(False, False)
+        self.reg_window.geometry("700x500")
+        self.reg_window.resizable(True, True)
 
         # --- Frame ---
         self.form_frame = tk.Frame(self.reg_window, padx=20, pady=20)
@@ -20,30 +21,66 @@ class StudentRegistrationReport(BaseRegistration):
         # Title
         tk.Label(
             self.form_frame,
-            text="Generate Student Registration Report",
-            font=("Arial", 12, "bold")
-        ).grid(row=0, column=0, columnspan=2, pady=(0, 15))
+            text="Student Registration Report",
+            font=("Arial", 14, "bold")
+        ).pack(pady=(0, 10))
 
-        # Generate button
-        self.generate_btn = tk.Button(
-            self.form_frame,
-            text="Generate Report",
-            width=25,
-            command=self.generate_report
-        )
-        self.generate_btn.grid(row=1, column=0, columnspan=2, pady=10)
+        # Preview text area with scrollbar
+        self.text_area = tk.Text(self.form_frame, wrap="none", height=20, width=80)
+        self.text_area.pack(fill="both", expand=True, padx=5, pady=5)
 
-        # Close button
-        self.close_btn = tk.Button(
-            self.form_frame,
-            text="Close",
-            width=25,
-            command=self.reg_window.destroy
-        )
-        self.close_btn.grid(row=2, column=0, columnspan=2, pady=5)
+        scrollbar_y = tk.Scrollbar(self.form_frame, orient="vertical", command=self.text_area.yview)
+        self.text_area.configure(yscrollcommand=scrollbar_y.set)
+        scrollbar_y.pack(side="right", fill="y")
+
+        # Buttons
+        btn_frame = tk.Frame(self.form_frame)
+        btn_frame.pack(fill="x", pady=10)
+
+        self.preview_btn = tk.Button(btn_frame, text="Preview Data", width=20, command=self.preview_report)
+        self.preview_btn.pack(side="left", padx=5)
+
+        self.generate_btn = tk.Button(btn_frame, text="Save to File", width=20, command=self.generate_report)
+        self.generate_btn.pack(side="left", padx=5)
+
+        self.close_btn = tk.Button(btn_frame, text="Close", width=20, command=self.reg_window.destroy)
+        self.close_btn.pack(side="right", padx=5)
+
+    def preview_report(self):
+        """Load student records into the preview text area"""
+        try:
+            students = self._model.select_all()
+            self.text_area.delete("1.0", tk.END)
+
+            if not students:
+                self.text_area.insert(tk.END, "No students found.\n")
+                return
+
+            header = (
+                "ID | Name | Year | Month | Contact | Discount | Email | Stream\n"
+                + "-" * 80 + "\n"
+            )
+            self.text_area.insert(tk.END, header)
+
+            for s in students:
+                line = (
+                    f"{s['student_id']} | "
+                    f"{s['name']} | "
+                    f"{s['registration_year']} | "
+                    f"{s['registration_month']} | "
+                    f"{s.get('contact_no', '')} | "
+                    f"{s.get('discount_percent', 0.00)} | "
+                    f"{s.get('email', '')} | "
+                    f"{s.get('stream', '')}\n"
+                )
+                self.text_area.insert(tk.END, line)
+
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not preview {self.entity_name}.\n{e}")
 
     def generate_report(self):
-        """Generate student registration report into a text file"""
+        """Save student registration report to a text file"""
         try:
             students = self._model.select_all()
             if not students:
@@ -73,7 +110,7 @@ class StudentRegistrationReport(BaseRegistration):
                     )
                     f.write(line)
 
-            messagebox.showinfo("Success", f"{self.entity_name} generated successfully!\nSaved at: {file_path}")
+            messagebox.showinfo("Success", f"{self.entity_name} saved successfully!\nFile: {file_path}")
 
         except Exception as e:
             Logger.log(e)

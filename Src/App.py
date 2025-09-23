@@ -11,6 +11,7 @@ from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
 from Src.log.Logger import Logger
 from Src.UserRegistration import UserRegistration
+from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 
 class App:
     def __init__(self, main_window, role):
@@ -65,7 +66,7 @@ class App:
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
         report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
-        report_menu.add_command(label="Student Registration", command=self.not_implemented)
+        report_menu.add_command(label="Student Registration", command=self.report_student_registration)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -102,6 +103,9 @@ class App:
 
     def open_import_monthly_payments(self):
         self.not_implemented()
+
+    def report_student_registration(self):
+        StudentRegistrationReport()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
