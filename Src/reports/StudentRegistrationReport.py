@@ -46,35 +46,40 @@ class StudentRegistrationReport(BaseRegistration):
         self.close_btn = tk.Button(btn_frame, text="Close", width=20, command=self.reg_window.destroy)
         self.close_btn.pack(side="right", padx=5)
 
+    def _generate_text_content(self):
+        """Helper: build the report text (used for preview and saving)."""
+        students = self._model.select_all()
+
+        if not students:
+            return "No students found.\n"
+
+        header = (
+            "ID | Name | Year | Month | Contact | Discount | Email | Stream\n"
+            + "-" * 80 + "\n"
+        )
+
+        lines = []
+        for s in students:
+            line = (
+                f"{s['student_id']} | "
+                f"{s['name']} | "
+                f"{s['registration_year']} | "
+                f"{s['registration_month']} | "
+                f"{s.get('contact_no', '')} | "
+                f"{s.get('discount_percent', 0.00)} | "
+                f"{s.get('email', '')} | "
+                f"{s.get('stream', '')}"
+            )
+            lines.append(line)
+
+        return header + "\n".join(lines) + "\n"
+
     def preview_report(self):
         """Load student records into the preview text area"""
         try:
-            students = self._model.select_all()
+            text_content = self._generate_text_content()
             self.text_area.delete("1.0", tk.END)
-
-            if not students:
-                self.text_area.insert(tk.END, "No students found.\n")
-                return
-
-            header = (
-                "ID | Name | Year | Month | Contact | Discount | Email | Stream\n"
-                + "-" * 80 + "\n"
-            )
-            self.text_area.insert(tk.END, header)
-
-            for s in students:
-                line = (
-                    f"{s['student_id']} | "
-                    f"{s['name']} | "
-                    f"{s['registration_year']} | "
-                    f"{s['registration_month']} | "
-                    f"{s.get('contact_no', '')} | "
-                    f"{s.get('discount_percent', 0.00)} | "
-                    f"{s.get('email', '')} | "
-                    f"{s.get('stream', '')}\n"
-                )
-                self.text_area.insert(tk.END, line)
-
+            self.text_area.insert(tk.END, text_content)
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Could not preview {self.entity_name}.\n{e}")
@@ -82,8 +87,8 @@ class StudentRegistrationReport(BaseRegistration):
     def generate_report(self):
         """Save student registration report to a text file"""
         try:
-            students = self._model.select_all()
-            if not students:
+            text_content = self._generate_text_content()
+            if "No students found" in text_content:
                 messagebox.showinfo("Info", f"No {self.entity_name.lower()}s found.")
                 return
 
@@ -96,19 +101,7 @@ class StudentRegistrationReport(BaseRegistration):
                 return  # Cancelled
 
             with open(file_path, "w", encoding="utf-8") as f:
-                f.write("=== Student Registration Report ===\n\n")
-                for s in students:
-                    line = (
-                        f"ID: {s['student_id']} | "
-                        f"Name: {s['name']} | "
-                        f"Year: {s['registration_year']} | "
-                        f"Month: {s['registration_month']} | "
-                        f"Contact: {s.get('contact_no', '')} | "
-                        f"Discount: {s.get('discount_percent', 0.00)} | "
-                        f"Email: {s.get('email', '')} | "
-                        f"Stream: {s.get('stream', '')}\n"
-                    )
-                    f.write(line)
+                f.write(text_content)
 
             messagebox.showinfo("Success", f"{self.entity_name} saved successfully!\nFile: {file_path}")
 
