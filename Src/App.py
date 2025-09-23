@@ -3,6 +3,7 @@ from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
 from Src.ImportStudentData import ImportStudentData
+from Src.StudentAttendanceProcess import StudentAttendanceProcess
 from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentPayments import StudentPayments
 from Src.StudentRegistration import StudentRegistration
@@ -60,6 +61,7 @@ class App:
         process_menu = tk.Menu(menubar, tearoff=0)
         process_menu.add_command(label="Import Student Record", command=self.open_import_students)
         process_menu.add_command(label="Import Monthly Payments", command=self.open_import_monthly_payments)
+        process_menu.add_command(label="Import Attendance Records", command=self.open_import_attendance_records)
         menubar.add_cascade(label="Process", menu=process_menu)
 
 
@@ -103,6 +105,9 @@ class App:
 
     def open_import_monthly_payments(self):
         self.not_implemented()
+
+    def open_import_attendance_records(self):
+        StudentAttendanceProcess()
 
     def report_student_registration(self):
         StudentRegistrationReport()
