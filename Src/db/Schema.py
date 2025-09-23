@@ -2,7 +2,23 @@
 from Src.crypt.Security import Security
 from Src.db.Connection import Connection
 
+class BaseModel:
+    def __init__(self, table_name):
+        self.table_name = table_name
 
+    def select_all(self, columns="*"):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute(f"SELECT {columns} FROM {self.table_name}")
+                return db_cursor.fetchall()
+
+    def delete(self, column, value):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(f"DELETE FROM {self.table_name} WHERE {column} = %s", (value,))
+            db_conn.commit()
+            return db_cursor.rowcount > 0
+        
 class Users:
     
     def __init__(self):
@@ -134,42 +150,27 @@ class Students:
                 db_cursor.execute("DELETE FROM students WHERE student_id = %s", (student_id,))
             db_conn.commit()
             return True
-
-class ClassRoom:
+        
+class ClassRoom(BaseModel):
     def __init__(self):
-        pass
+        super().__init__("classrooms")
 
-    def add_classroom(self, room_code, capacity, has_ac=False, has_whiteboard=False, has_screen=False):
+    def insert(self, classroom_code, capacity, has_ac=False, has_whiteboard=False, has_screen=False):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     "INSERT INTO classrooms (classroom_code, capacity, has_ac, has_whiteboard, has_screen) VALUES (%s, %s, %s, %s, %s)",
-                    (room_code, capacity, has_ac, has_whiteboard, has_screen)
-                )
-            db_conn.commit()
-            return True
-    
-    def get_all_classrooms(self):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor(dictionary=True) as db_cursor:
-                db_cursor.execute("SELECT classroom_code, capacity, has_ac, has_whiteboard, has_screen FROM classrooms")
-                classrooms = db_cursor.fetchall()
-        return classrooms
-    
-    def update_classroom(self, room_code, capacity, has_ac, has_whiteboard, has_screen):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
-                db_cursor.execute(
-                    "UPDATE classrooms SET capacity = %s, has_ac = %s, has_whiteboard = %s, has_screen = %s WHERE classroom_code = %s",
-                    (capacity, has_ac, has_whiteboard, has_screen, room_code)
+                    (classroom_code, capacity, has_ac, has_whiteboard, has_screen)
                 )
             db_conn.commit()
             return True
 
-    def delete_classroom(self, classroom_id):
+    def update(self, classroom_code, capacity, has_ac, has_whiteboard, has_screen):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM classrooms WHERE classroom_code = %s", (classroom_id,))
+                db_cursor.execute("UPDATE classrooms SET capacity = %s, has_ac = %s, has_whiteboard = %s, has_screen = %s WHERE classroom_code = %s",
+                    (capacity, has_ac, has_whiteboard, has_screen, classroom_code)
+                )
             db_conn.commit()
             return True
         
