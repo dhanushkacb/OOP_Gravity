@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from Src.config import Settings
 from Src.db.Schema import Users
-from Src.config.Settings import Settings
 import tkinter.ttk as ttk
 
 class UserRegistration:
@@ -89,7 +87,7 @@ class UserRegistration:
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        users = self._users.get_users_to_display()
+        users = self._users.get_all_users()
         for user in users:
             # Insert user row with Edit/Delete text
             self.tree.insert("", "end", values=(user["username"], user["role"], "✏️ Edit", "🗑️ Delete"))
