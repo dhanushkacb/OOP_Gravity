@@ -35,12 +35,31 @@ class Users:
                 users = db_cursor.fetchall()
         return users
     
-    def delete_user(self, user_id):
+    def get_all_users(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
+                users = db_cursor.fetchall()
+        return users
+    
+    def delete_user(self, user_name):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
+                db_cursor.execute("DELETE FROM users WHERE username = %s", (user_name,))
             db_conn.commit()
             return True
+        
+    def update_user(self, username, new_password, new_role):
+       
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+           
+                db_cursor.execute(
+                    "UPDATE users SET password_hash=%s, role=%s WHERE username=%s",
+                    (new_password, new_role, username)
+                )
+                db_conn.commit()
+            return db_cursor.rowcount > 0
         
     def change_password(self, user_id, new_password):
         new_password_hash = Security.hash(new_password)
