@@ -1,16 +1,15 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import csv
-from Src.BaseRegistration import BaseRegistration
 from Src.db.Schema import Students
+from Src.db.Schema import Attendance
 from Src.log.Logger import Logger
+from Src.BaseRegistration import BaseRegistration
 
-
-class ImportStudentData(BaseRegistration):
-    def __init__(self, entity_name="Import Students", key_column="student_id"):
-        super().__init__(model=Students(), entity_name=entity_name, key_column=key_column)
+class StudentAttendanceProcess(BaseRegistration):
+    def __init__(self, entity_name="Mark Attendance", key_column="attendance_id"):
+        super().__init__(model=Attendance(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
-
         self.reg_window.title(entity_name)
         self.reg_window.resizable(False, False)
 
@@ -31,7 +30,7 @@ class ImportStudentData(BaseRegistration):
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
         self.table_frame.pack(fill="both", expand=True)
 
-        columns = ("name", "registration_year", "registration_month", "contact_no", "discount_percent", "email", "stream")
+        columns = ("student_id", "class_id", "session_date", "status")
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=12)
 
         for col in columns:
@@ -63,13 +62,10 @@ class ImportStudentData(BaseRegistration):
                 for row in reader:
                     self.preview_data.append(row)
                     self.tree.insert("", "end", values=(
-                        row.get("name", ""),
-                        row.get("registration_year", ""),
-                        row.get("registration_month", ""),
-                        row.get("contact_no", ""),
-                        row.get("discount_percent", ""),
-                        row.get("email", ""),
-                        row.get("stream", "")
+                        row.get("student_id", ""),
+                        row.get("class_id", ""),
+                        row.get("session_date", ""),
+                        row.get("status", "")
                     ))
 
             if self.preview_data:
@@ -92,19 +88,16 @@ class ImportStudentData(BaseRegistration):
             for row in self.preview_data:
                 try:
                     self._model.insert(
-                        row.get("name"),
-                        row.get("registration_year"),
-                        row.get("registration_month"),
-                        row.get("contact_no"),
-                        float(row.get("discount_percent", 0.0)) if row.get("discount_percent") else 0.0,
-                        row.get("email"),
-                        row.get("stream")
+                        row.get("student_id"),
+                        row.get("class_id"),
+                        row.get("session_date"),
+                        row.get("status")
                     )
                     success_count += 1
                 except Exception as e:
                     Logger.log(f"Failed to insert record: {row} -> {e}")
 
-            messagebox.showinfo("Import Complete", f"Successfully imported {success_count} students.")
+            messagebox.showinfo("Import Complete", f"Successfully imported {success_count} attendance records.")
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Import failed.\n{e}")
