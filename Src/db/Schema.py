@@ -35,12 +35,31 @@ class Users:
                 users = db_cursor.fetchall()
         return users
     
-    def delete_user(self, user_id):
+    def get_all_users(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
+                users = db_cursor.fetchall()
+        return users
+    
+    def delete_user(self, user_name):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
+                db_cursor.execute("DELETE FROM users WHERE username = %s", (user_name,))
             db_conn.commit()
             return True
+        
+    def update_user(self, username, new_password, new_role):
+       
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+           
+                db_cursor.execute(
+                    "UPDATE users SET password_hash=%s, role=%s WHERE username=%s",
+                    (new_password, new_role, username)
+                )
+                db_conn.commit()
+            return db_cursor.rowcount > 0
         
     def change_password(self, user_id, new_password):
         new_password_hash = Security.hash(new_password)
@@ -70,6 +89,16 @@ class Teachers:
                 db_cursor.execute("SELECT * FROM teachers")
                 teachers = db_cursor.fetchall()
         return teachers
+    
+    def update_teacher(self, teacher_id, name, subject, contact_no=None, email=None):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "UPDATE teachers SET name = %s, subject = %s, contact_no = %s, email = %s WHERE teacher_id = %s",
+                    (name, subject, contact_no, email, teacher_id)
+                )
+            db_conn.commit()
+            return True
     
     def delete_teacher(self, teacher_id):
         with Connection.Database() as db_conn:
@@ -127,10 +156,20 @@ class ClassRoom:
                 classrooms = db_cursor.fetchall()
         return classrooms
     
+    def update_classroom(self, room_code, capacity, has_ac, has_whiteboard, has_screen):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "UPDATE classrooms SET capacity = %s, has_ac = %s, has_whiteboard = %s, has_screen = %s WHERE classroom_code = %s",
+                    (capacity, has_ac, has_whiteboard, has_screen, room_code)
+                )
+            db_conn.commit()
+            return True
+
     def delete_classroom(self, classroom_id):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM classrooms WHERE classroom_id = %s", (classroom_id,))
+                db_cursor.execute("DELETE FROM classrooms WHERE classroom_code = %s", (classroom_id,))
             db_conn.commit()
             return True
         
@@ -301,3 +340,42 @@ class BulkUploads:
                 db_cursor.execute("DELETE FROM bulk_uploads WHERE upload_id = %s", (upload_id,))
             db_conn.commit()
             return True
+        
+class SystemSettings:
+    def __init__(self):
+        pass
+
+    def add_setting(self, setting_key, setting_value):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "INSERT INTO system_settings (setting_key, setting_value) VALUES (%s, %s)",
+                    (setting_key, setting_value)
+                )
+            db_conn.commit()
+            return True
+    
+    def get_settings(self, setting_key):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT setting_value FROM system_settings WHERE setting_key = %s", (setting_key))
+                settings = db_cursor.fetchall()
+        return settings
+
+    def get_user_roles(self):
+        return self.get_settings("USER_ROLE")
+    
+    def get_class_type(self):
+        return self.get_settings("CLASS_TYPE")
+    
+    def get_class_category(self):
+        return self.get_settings("CLASS_CATEGORY")
+    
+    def get_subjects(self):
+        return self.get_settings("SUBJECTS")
+    
+    def get_attendance_status(self):
+        return self.get_settings("ATTENDANCE")
+    
+    def get_upload_types(self):
+        return self.get_settings("UPLOAD_TYPE")
