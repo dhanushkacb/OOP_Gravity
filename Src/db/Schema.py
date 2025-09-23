@@ -1,6 +1,7 @@
 #create table store schema
 from Src.crypt.Security import Security
 from Src.db.Connection import Connection
+from datetime import datetime
 
 class BaseModel:
     def __init__(self, table_name):
@@ -17,7 +18,7 @@ class BaseModel:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(f"DELETE FROM {self.table_name} WHERE {column} = %s", (value,))
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 class Users(BaseModel):
     def __init__(self):
@@ -32,7 +33,7 @@ class Users(BaseModel):
                     (username, password_hash, role)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def update(self, username, new_password, new_role):
         password_hash = Security.hash(new_password)
@@ -43,7 +44,7 @@ class Users(BaseModel):
                     (password_hash, new_role, username)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def authenticate(self, username, password):
         with Connection.Database() as db_conn:
@@ -64,7 +65,7 @@ class Users(BaseModel):
                     (password_hash, user_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
           
 class Teachers(BaseModel):
     def __init__(self):
@@ -88,7 +89,7 @@ class Teachers(BaseModel):
                     (name, subject, contact_no, email, teacher_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
         
 class Students(BaseModel):
@@ -124,7 +125,7 @@ class Students(BaseModel):
                     (name, registration_year, registration_month, contact_no, discount_percent, email, stream, student_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
         
 class ClassRoom(BaseModel):
     def __init__(self):
@@ -138,7 +139,7 @@ class ClassRoom(BaseModel):
                     (classroom_code, capacity, has_ac, has_whiteboard, has_screen)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
     def update(self, classroom_code, capacity, has_ac, has_whiteboard, has_screen):
         with Connection.Database() as db_conn:
@@ -147,7 +148,7 @@ class ClassRoom(BaseModel):
                     (capacity, has_ac, has_whiteboard, has_screen, classroom_code)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
         
 class Classes(BaseModel):
     def __init__(self):
@@ -179,36 +180,36 @@ class Classes(BaseModel):
                     (teacher_id, subject, class_type, category, time_slot, classroom, class_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Enrollments(BaseModel):
     def __init__(self):
         super().__init__("enrollments")
-
-    def insert(self, student_id, class_id):
+    def insert(self, student_id, class_id, enrolled_date=datetime.now()):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
-                    "INSERT INTO enrollments (student_id, class_id) VALUES (%s, %s)",
-                    (student_id, class_id)
+                    "INSERT INTO enrollments (student_id, class_id, enrollment_date) VALUES (%s, %s, %s)",
+                    (student_id, class_id, enrolled_date)
                 )
             db_conn.commit()
             return True
+            return True
 
-    def update(self, enrollment_id, student_id, class_id):
+    def update(self, enrollment_id, student_id, class_id,enrolled_date):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE enrollments 
-                    SET student_id=%s, class_id=%s 
+                    SET student_id=%s, class_id=%s,enrollment_date=%s
                     WHERE enrollment_id=%s
                     """,
-                    (student_id, class_id, enrollment_id)
+                    (student_id, class_id, enrolled_date, enrollment_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Payments(BaseModel):
@@ -242,7 +243,7 @@ class Payments(BaseModel):
                     (student_id, class_id, month, year, amount, payment_method, remarks, payment_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class Attendance(BaseModel):
@@ -275,7 +276,7 @@ class Attendance(BaseModel):
                     (student_id, class_id, session_date, status, attendance_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class TuteDistribution(BaseModel):
@@ -308,7 +309,7 @@ class TuteDistribution(BaseModel):
                     (student_id, class_id, remarks, tute_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 
 class BulkUploads(BaseModel):
@@ -341,7 +342,7 @@ class BulkUploads(BaseModel):
                     (upload_type, file_name, uploaded_by, upload_id)
                 )
             db_conn.commit()
-            return db_cursor.rowcount > 0
+            return True
 
 class SystemSettings:
     def __init__(self):
@@ -386,3 +387,6 @@ class SystemSettings:
     
     def get_time_slot(self):
         return self.get_settings("TIME_SLOT")
+    
+    def get_streams(self):
+        return self.get_settings("STREAM")

@@ -52,7 +52,7 @@ class CreateDatabase:
                 name VARCHAR(100) NOT NULL,
                 registration_year INT NOT NULL,
                 registration_month INT NOT NULL,
-                contact_no VARCHAR(20),
+                contact_no VARCHAR(20) NOT NULL UNIQUE,
                 discount_percent DECIMAL(5,2) DEFAULT 0.00,
                 email VARCHAR(100),
                 stream VARCHAR(50),
@@ -211,7 +211,12 @@ class CreateDatabase:
                         ("TIME_SLOT","M-9-12"),
                         ("TIME_SLOT","A-12-3"),
                         ("TIME_SLOT","E-3-6"),
-                        ("TIME_SLOT","N-6-9")
+                        ("TIME_SLOT","N-6-9"),
+                        ("STREAM", "PHYSICS"),
+                        ("STREAM", "BIO"),
+                        ("STREAM", "ARTS"),
+                        ("STREAM", "COMMERCE"),
+                        ("STREAM", "ICT"),
                     ]
                     for key, value in default_settings:
                         db_cursor.execute(

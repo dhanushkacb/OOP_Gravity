@@ -2,11 +2,16 @@ import tkinter as tk
 from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
+from Src.ImportStudentData import ImportStudentData
+from Src.StudentEnrollments import StudentEnrollments
+from Src.StudentPayments import StudentPayments
+from Src.StudentRegistration import StudentRegistration
 from Src.TeacherRegistration import TeacherRegistration
 from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
 from Src.log.Logger import Logger
 from Src.UserRegistration import UserRegistration
+from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 
 class App:
     def __init__(self, main_window, role):
@@ -39,15 +44,29 @@ class App:
 
         # Features Menu
         feature_menu = tk.Menu(menubar, tearoff=0)
-        feature_menu.add_command(label="Student Management", command=self.not_implemented)
+        feature_menu.add_command(label="Student Management", command=self.open_student_registration)
         feature_menu.add_command(label="Teacher Management", command=self.open_teacher_registration)
         feature_menu.add_command(label="Class Management", command=self.open_class_schedule)
         menubar.add_cascade(label="Features", menu=feature_menu)
 
+        # Operation Menu
+        operation_menu = tk.Menu(menubar, tearoff=0)
+        operation_menu.add_command(label="Student Enrollment", command=self.open_student_enrollments)
+        operation_menu.add_command(label="Student Payments", command=self.open_student_payments)
+        operation_menu.add_command(label="Class Management", command=self.not_implemented)
+        menubar.add_cascade(label="Operation", menu=operation_menu)
+
+        # Process Menu
+        process_menu = tk.Menu(menubar, tearoff=0)
+        process_menu.add_command(label="Import Student Record", command=self.open_import_students)
+        process_menu.add_command(label="Import Monthly Payments", command=self.open_import_monthly_payments)
+        menubar.add_cascade(label="Process", menu=process_menu)
+
+
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
         report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
-        report_menu.add_command(label="Student Registrations", command=self.not_implemented)
+        report_menu.add_command(label="Student Registration", command=self.report_student_registration)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -62,22 +81,31 @@ class App:
         UserRegistration()
 
     def open_classroom_registration(self):
-        if self.role != "Admin":
-            messagebox.showerror("Error", "Access denied! Admins only.")
-            return
         ClassroomRegistration()
 
     def open_teacher_registration(self):
-        if self.role != "Admin":
-            messagebox.showerror("Error", "Access denied! Admins only.")
-            return
         TeacherRegistration()
 
     def open_class_schedule(self):
-        if self.role != "Admin":
-            messagebox.showerror("Error", "Access denied! Admins only.")
-            return
         ClassSchedule()
+
+    def open_student_registration(self):
+        StudentRegistration()
+
+    def open_student_enrollments(self):
+        StudentEnrollments()
+
+    def open_student_payments(self):
+        StudentPayments()
+
+    def open_import_students(self):
+        ImportStudentData()
+
+    def open_import_monthly_payments(self):
+        self.not_implemented()
+
+    def report_student_registration(self):
+        StudentRegistrationReport()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
