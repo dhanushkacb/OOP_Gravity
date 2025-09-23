@@ -122,7 +122,7 @@ class CreateDatabase:
                 student_id INT NOT NULL,
                 class_id INT NOT NULL,
                 session_date DATE NOT NULL,
-                status VARCHAR(100),
+                status BOOLEAN NOT NULL,
                 FOREIGN KEY (student_id) REFERENCES Students(student_id)
                     ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (class_id) REFERENCES classes(class_id)
@@ -202,11 +202,10 @@ class CreateDatabase:
                         ("SUBJECTS", "Mathematics"),
                         ("SUBJECTS", "Chemistry"),
                         ("SUBJECTS", "Biology"),
-                        ("SUBJECTS", "ICT"),
-                        ("ATTENDANCE", "Present"),
-                        ("ATTENDANCE", "Absent"),
+                        ("SUBJECTS", "ICT"),                        
                         ("UPLOAD_TYPE", "Students"),
                         ("UPLOAD_TYPE", "Payments"),
+                        ("UPLOAD_TYPE", "Attendance"),
                         ("TIME_SLOT","M-6-9"),
                         ("TIME_SLOT","M-9-12"),
                         ("TIME_SLOT","A-12-3"),
