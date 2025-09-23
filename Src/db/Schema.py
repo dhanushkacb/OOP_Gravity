@@ -387,3 +387,6 @@ class SystemSettings:
     
     def get_time_slot(self):
         return self.get_settings("TIME_SLOT")
+    
+    def get_streams(self):
+        return self.get_settings("STREAM")
