@@ -147,11 +147,10 @@ class ClassRoom:
             db_conn.commit()
             return True
 
-    
     def delete_classroom(self, classroom_id):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM classrooms WHERE classroom_id = %s", (classroom_id,))
+                db_cursor.execute("DELETE FROM classrooms WHERE classroom_code = %s", (classroom_id,))
             db_conn.commit()
             return True
         
