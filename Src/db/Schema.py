@@ -1,6 +1,7 @@
 #create table store schema
 from Src.crypt.Security import Security
 from Src.db.Connection import Connection
+from datetime import datetime
 
 class BaseModel:
     def __init__(self, table_name):
@@ -185,27 +186,27 @@ class Classes(BaseModel):
 class Enrollments(BaseModel):
     def __init__(self):
         super().__init__("enrollments")
-
-    def insert(self, student_id, class_id):
+    def insert(self, student_id, class_id, enrolled_date=datetime.now()):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
-                    "INSERT INTO enrollments (student_id, class_id) VALUES (%s, %s)",
-                    (student_id, class_id)
+                    "INSERT INTO enrollments (student_id, class_id, enrollment_date) VALUES (%s, %s, %s)",
+                    (student_id, class_id, enrolled_date)
                 )
             db_conn.commit()
             return True
+            return True
 
-    def update(self, enrollment_id, student_id, class_id):
+    def update(self, enrollment_id, student_id, class_id,enrolled_date):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE enrollments 
-                    SET student_id=%s, class_id=%s 
+                    SET student_id=%s, class_id=%s,enrollment_date=%s
                     WHERE enrollment_id=%s
                     """,
-                    (student_id, class_id, enrollment_id)
+                    (student_id, class_id, enrolled_date, enrollment_id)
                 )
             db_conn.commit()
             return db_cursor.rowcount > 0
