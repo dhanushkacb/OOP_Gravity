@@ -65,7 +65,7 @@ class ClassroomRegistration:
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
         self.table_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-        columns = ("code", "capacity", "ac", "whiteboard", "screen")
+        columns = ("code", "capacity", "ac", "whiteboard", "screen","delete")
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=6)
 
         # Attach vertical scrollbar
@@ -82,6 +82,7 @@ class ClassroomRegistration:
         self.tree.heading("ac", text="AC")
         self.tree.heading("whiteboard", text="Whiteboard")
         self.tree.heading("screen", text="Screen")
+        self.tree.heading("delete", text="Delete")
 
         for col in columns:
             self.tree.column(col, width=100, anchor="center", stretch=True)
@@ -123,8 +124,26 @@ class ClassroomRegistration:
                 c["capacity"],
                 "Yes" if c["has_ac"] else "No",
                 "Yes" if c["has_whiteboard"] else "No",
-                "Yes" if c["has_screen"] else "No"
+                "Yes" if c["has_screen"] else "No",
+                "🗑️ Delete"
             ))
+        self.tree.bind("<Button-1>", self.on_tree_item_click)
+
+    def on_tree_item_click(self, event):
+        region = self.tree.identify("region", event.x, event.y)
+        if region != "cell":
+            return
+
+        row_id = self.tree.identify_row(event.y)
+        col = self.tree.identify_column(event.x)
+        if not row_id or not col:
+            return
+
+        values = self.tree.item(row_id, "values")
+        classroom_code = values[0]
+
+        if col == "#6":  # Delete column
+            self.delete_classroom(classroom_code)
 
     def on_tree_select(self, event):
         selected = self.tree.selection()
@@ -166,13 +185,16 @@ class ClassroomRegistration:
         else:
             messagebox.showerror("Error", "Failed to update classroom.")
 
-    def delete_classroom(self):
+    def delete_classroom(self,classroom_code=None):
         selected = self.tree.selection()
-        if not selected or self.selected_code == None:
+        if (not selected or self.selected_code == None) and classroom_code == None:
             messagebox.showerror("Error", "Select a classroom to delete")
             return
-        
-        if self._classrooms.delete_classroom(self.selected_code):
+        row_value = self.selected_code
+        if classroom_code != None:
+            row_value=classroom_code
+
+        if self._classrooms.delete_classroom(row_value):
             messagebox.showinfo("Success", "Classroom deleted successfully!")
             self.load_classrooms()
             self.clear_form()
