@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
+from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentRegistration import StudentRegistration
 from Src.TeacherRegistration import TeacherRegistration
 from Src.login.LoginWindow import LoginWindow
@@ -48,7 +49,7 @@ class App:
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
         report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
-        report_menu.add_command(label="Student Registrations", command=self.not_implemented)
+        report_menu.add_command(label="Student Enrollments", command=self.open_student_enrollments)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -73,6 +74,9 @@ class App:
 
     def open_student_registration(self):
         StudentRegistration()
+
+    def open_student_enrollments(self):
+        StudentEnrollments()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
