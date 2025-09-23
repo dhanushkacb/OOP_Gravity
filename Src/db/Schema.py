@@ -132,11 +132,11 @@ class Users(BaseModel):
 #             db_conn.commit()
 #             return True
         
-class Teachers:
+class Teachers(BaseModel):
     def __init__(self):
-        pass
+        super().__init__("teachers")
 
-    def add_teacher(self, name, subject, contact_no=None, email=None):
+    def insert(self, name, subject, contact_no=None, email=None):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
@@ -145,30 +145,17 @@ class Teachers:
                 )
             db_conn.commit()
             return True
-    
-    def get_all_teachers(self):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor(dictionary=True) as db_cursor:
-                db_cursor.execute("SELECT * FROM teachers")
-                teachers = db_cursor.fetchall()
-        return teachers
-    
-    def update_teacher(self, teacher_id, name, subject, contact_no=None, email=None):
+
+    def update(self, teacher_id, name, subject, contact_no=None, email=None):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
-                    "UPDATE teachers SET name = %s, subject = %s, contact_no = %s, email = %s WHERE teacher_id = %s",
+                    "UPDATE teachers SET name=%s, subject=%s, contact_no=%s, email=%s WHERE teacher_id=%s",
                     (name, subject, contact_no, email, teacher_id)
                 )
             db_conn.commit()
-            return True
-    
-    def delete_teacher(self, teacher_id):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM teachers WHERE teacher_id = %s", (teacher_id,))
-            db_conn.commit()
-            return True
+            return db_cursor.rowcount > 0
+
         
 class Students:
     def __init__(self):
