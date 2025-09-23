@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from Src.db.Schema import SystemSettings
 from Src.log.Logger import Logger
 
 class BaseRegistration:
     def __init__(self, model, entity_name, key_column):
         self._model = model
+        self._settings = SystemSettings()
         self.entity_name = entity_name
         self.key_column = key_column
         self.selected_key = None

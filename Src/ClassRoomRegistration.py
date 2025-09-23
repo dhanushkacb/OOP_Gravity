@@ -7,8 +7,8 @@ from Src.log.Logger import Logger
 
 class ClassroomRegistration(BaseRegistration):
 
-    def __init__(self, entity_name="Classroom"):
-        super().__init__(model=ClassRoom(), entity_name=entity_name, key_column="classroom_code")
+    def __init__(self, entity_name="Classroom",key_column="classroom_code"):
+        super().__init__(model=ClassRoom(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
 
         self.reg_window.title(f"{entity_name} Registration")

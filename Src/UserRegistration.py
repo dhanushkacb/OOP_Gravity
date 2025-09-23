@@ -6,8 +6,8 @@ from Src.log.Logger import Logger
 
 class UserRegistration(BaseRegistration):
 
-    def __init__(self, entity_name="User"):
-        super().__init__(model=Users(), entity_name=entity_name, key_column="username")
+    def __init__(self, entity_name="User",key_column="username"):
+        super().__init__(model=Users(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
         
         self.reg_window.title(f"{entity_name} Registration")
@@ -34,7 +34,7 @@ class UserRegistration(BaseRegistration):
         self.role_menu = ttk.Combobox(
             self.form_frame,
             textvariable=self.role_var,
-            values=["Admin", "Staff"],
+            values=self._settings.get_user_roles(),
             width=27,
             state="readonly"
         )

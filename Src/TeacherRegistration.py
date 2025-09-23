@@ -26,8 +26,15 @@ class TeacherRegistration(BaseRegistration):
 
         # Subject
         tk.Label(self.form_frame, text="Subject:", anchor="w").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        self.subject_entry = tk.Entry(self.form_frame, width=Settings.ENTRY_WIDTH)
-        self.subject_entry.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+        self.subject_entry = tk.StringVar()
+        self.subject_menu = ttk.Combobox(
+            self.form_frame,
+            textvariable=self.subject_entry,
+            values=self._settings.get_subjects(),
+            width=27,
+            state="readonly"
+        )
+        self.subject_menu.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
         # Contact No
         tk.Label(self.form_frame, text="Contact No:", anchor="w").grid(row=3, column=0, sticky="w", padx=5, pady=5)
@@ -134,8 +141,7 @@ class TeacherRegistration(BaseRegistration):
         self.selected_key = values[0]
         self.name_entry.delete(0, tk.END)
         self.name_entry.insert(0, values[1])
-        self.subject_entry.delete(0, tk.END)
-        self.subject_entry.insert(0, values[2])
+        self.subject_entry.set(values[2])
         self.contact_entry.delete(0, tk.END)
         self.contact_entry.insert(0, values[3])
         self.email_entry.delete(0, tk.END)
@@ -165,7 +171,7 @@ class TeacherRegistration(BaseRegistration):
 
     def clear_form(self):
         self.name_entry.delete(0, tk.END)
-        self.subject_entry.delete(0, tk.END)
+        self.subject_entry.set("")
         self.contact_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
         self.selected_key = None

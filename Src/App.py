@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
+from Src.ClassSchedule import ClassSchedule
 from Src.TeacherRegistration import TeacherRegistration
 from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
@@ -40,7 +41,7 @@ class App:
         feature_menu = tk.Menu(menubar, tearoff=0)
         feature_menu.add_command(label="Student Management", command=self.not_implemented)
         feature_menu.add_command(label="Teacher Management", command=self.open_teacher_registration)
-        feature_menu.add_command(label="Class Management", command=self.not_implemented)
+        feature_menu.add_command(label="Class Management", command=self.open_class_schedule)
         menubar.add_cascade(label="Features", menu=feature_menu)
 
         # Reports Menu
@@ -71,6 +72,12 @@ class App:
             messagebox.showerror("Error", "Access denied! Admins only.")
             return
         TeacherRegistration()
+
+    def open_class_schedule(self):
+        if self.role != "Admin":
+            messagebox.showerror("Error", "Access denied! Admins only.")
+            return
+        ClassSchedule()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
