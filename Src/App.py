@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
+from Src.ImportStudentData import ImportStudentData
 from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentPayments import StudentPayments
 from Src.StudentRegistration import StudentRegistration
@@ -54,6 +55,12 @@ class App:
         operation_menu.add_command(label="Class Management", command=self.not_implemented)
         menubar.add_cascade(label="Operation", menu=operation_menu)
 
+        # Process Menu
+        process_menu = tk.Menu(menubar, tearoff=0)
+        process_menu.add_command(label="Import Student Record", command=self.open_import_students)
+        process_menu.add_command(label="Import Monthly Payments", command=self.open_import_monthly_payments)
+        menubar.add_cascade(label="Process", menu=process_menu)
+
 
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
@@ -89,6 +96,12 @@ class App:
 
     def open_student_payments(self):
         StudentPayments()
+
+    def open_import_students(self):
+        ImportStudentData()
+
+    def open_import_monthly_payments(self):
+        self.not_implemented()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
