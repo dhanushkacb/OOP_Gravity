@@ -16,10 +16,6 @@ class UserRegistration:
         self.form_frame = tk.Frame(self.reg_window, padx=20, pady=20, relief=tk.RIDGE, borderwidth=2)
         self.form_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Title label
-        tk.Label(self.form_frame, text="User Registration", font=("Arial", 16, "bold")).grid(
-            row=0, column=0, columnspan=2, pady=(0, 15)
-        )
 
         entry_width = 30
 
