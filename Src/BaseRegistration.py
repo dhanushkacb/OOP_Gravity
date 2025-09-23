@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from Src.log.Logger import Logger
+
 class BaseRegistration:
     def __init__(self, model, entity_name, key_column):
         self._model = model
@@ -9,19 +11,24 @@ class BaseRegistration:
         self.selected_key = None
 
     def delete_record(self, record_key=None):
-        if not messagebox.askyesno("Delete", f"Are you sure you want to delete this {self.entity_name}?"):
-            return
+        try:
+            if not messagebox.askyesno("Delete", f"Are you sure you want to delete this {self.entity_name}?"):
+                return
 
-        row_value = record_key or self.selected_key
-        if not row_value:
-            messagebox.showerror("Error", f"Select a {self.entity_name} to delete")
-            return
+            row_value = record_key or self.selected_key
+            if not row_value:
+                messagebox.showerror("Error", f"Select a {self.entity_name} to delete")
+                return
 
-        if self._model.delete(self.key_column, row_value):
-            messagebox.showinfo("Success", f"{self.entity_name} deleted successfully!")
-            self.load_records()  # must exist in child
-        else:
-            messagebox.showerror("Error", f"Failed to delete {self.entity_name}.")
+            if self._model.delete(self.key_column, row_value):
+                messagebox.showinfo("Success", f"{self.entity_name} deleted successfully!")
+                self.load_records()  # must exist in child
+            else:
+                messagebox.showerror("Error", f"Failed to delete {self.entity_name}.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not delete {self.entity_name}. Please try again.")
+
 
     def on_tree_item_click(self, event):
         region = self.tree.identify("region", event.x, event.y)

@@ -3,6 +3,7 @@ from tkinter import messagebox,ttk
 from Src.BaseRegistration import BaseRegistration
 from Src.config.Settings import Settings
 from Src.db.Schema import ClassRoom
+from Src.log.Logger import Logger
 
 class ClassroomRegistration(BaseRegistration):
 
@@ -89,40 +90,48 @@ class ClassroomRegistration(BaseRegistration):
         self.load_records()
 
     def save_record(self, event=None):
-        code = self.code_entry.get().strip()
-        capacity = self.capacity_entry.get().strip()
+        try:
+            code = self.code_entry.get().strip()
+            capacity = self.capacity_entry.get().strip()
 
-        # Validate input
-        if not code or not capacity.isdigit():
-            messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
-            return
+            # Validate input
+            if not code or not capacity.isdigit():
+                messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
+                return
 
-        # Convert checkboxes
-        has_ac = self.has_ac_var.get()
-        has_whiteboard = self.has_whiteboard_var.get()
-        has_screen = self.has_screen_var.get()
+            # Convert checkboxes
+            has_ac = self.has_ac_var.get()
+            has_whiteboard = self.has_whiteboard_var.get()
+            has_screen = self.has_screen_var.get()
 
-        if self._model.insert(code, int(capacity), has_ac, has_whiteboard, has_screen):
-            messagebox.showinfo("Success", "Record successfully saved!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to register classroom.")
+            if self._model.insert(code, int(capacity), has_ac, has_whiteboard, has_screen):
+                messagebox.showinfo("Success", "Record successfully saved!")
+                self.load_records()
+            else:
+                messagebox.showerror("Error", "Failed to register classroom.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not Save {self.entity_name}. Please try again.")
 
     def load_records(self):
-        for row in self.tree.get_children():
-            self.tree.delete(row)
+        try:
+            for row in self.tree.get_children():
+                self.tree.delete(row)
 
-        classrooms = self._model.select_all()
-        for c in classrooms:
-            self.tree.insert("", "end", values=(
-                c["classroom_code"],
-                c["capacity"],
-                "Yes" if c["has_ac"] else "No",
-                "Yes" if c["has_whiteboard"] else "No",
-                "Yes" if c["has_screen"] else "No",
-                "🗑️ Delete"
-            ))
-        self.clear_form()
+            classrooms = self._model.select_all()
+            for c in classrooms:
+                self.tree.insert("", "end", values=(
+                    c["classroom_code"],
+                    c["capacity"],
+                    "Yes" if c["has_ac"] else "No",
+                    "Yes" if c["has_whiteboard"] else "No",
+                    "Yes" if c["has_screen"] else "No",
+                    "🗑️ Delete"
+                ))
+            self.clear_form()
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not select all {self.entity_name}. Please try again.")
 
     def on_tree_select(self, event):
         selected = self.tree.selection()
@@ -141,25 +150,29 @@ class ClassroomRegistration(BaseRegistration):
         self.has_ac_var.set(values[2] == "Yes")
         self.has_whiteboard_var.set(values[3] == "Yes")
         self.has_screen_var.set(values[4] == "Yes")
-        self.selected_code = values[0]
+        self.selected_key = values[0]
         self.submit_btn.config(text="Update", command=self.update_record)
 
     def update_record(self, event=None):
-        code = self.code_entry.get().strip()
-        capacity = self.capacity_entry.get().strip()
-        has_ac = self.has_ac_var.get()
-        has_whiteboard = self.has_whiteboard_var.get()
-        has_screen = self.has_screen_var.get()
+        try:
+            code = self.code_entry.get().strip()
+            capacity = self.capacity_entry.get().strip()
+            has_ac = self.has_ac_var.get()
+            has_whiteboard = self.has_whiteboard_var.get()
+            has_screen = self.has_screen_var.get()
 
-        if not code or not capacity.isdigit():
-            messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
-            return
+            if not code or not capacity.isdigit():
+                messagebox.showerror("Error", "Valid classroom code and numeric capacity are required")
+                return
 
-        if self._model.update(self.selected_code, int(capacity), has_ac, has_whiteboard, has_screen):
-            messagebox.showinfo("Success", "Record updated successfully!")
-            self.load_records()
-        else:
-            messagebox.showerror("Error", "Failed to update record.")
+            if self._model.update(self.selected_key, int(capacity), has_ac, has_whiteboard, has_screen):
+                messagebox.showinfo("Success", "Record updated successfully!")
+                self.load_records()
+            else:
+                messagebox.showerror("Error", "Failed to update record.")
+        except Exception as e:
+            Logger.log(e)
+            messagebox.showerror("Error", f"Could not update {self.entity_name}. Please try again.")
         
     def clear_form(self):
         self.code_entry.config(state="normal")
@@ -168,5 +181,5 @@ class ClassroomRegistration(BaseRegistration):
         self.has_ac_var.set(False)
         self.has_whiteboard_var.set(True)
         self.has_screen_var.set(False)
-        self.selected_code = None
+        self.selected_key = None
         self.submit_btn.config(text="Save", command=self.save_record)

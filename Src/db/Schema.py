@@ -18,22 +18,12 @@ class BaseModel:
                 db_cursor.execute(f"DELETE FROM {self.table_name} WHERE {column} = %s", (value,))
             db_conn.commit()
             return db_cursor.rowcount > 0
-        
-class Users:
-    
-    def __init__(self):
-        pass
 
-    def authenticate(self, username, password):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
-                db_cursor.execute("SELECT role FROM users WHERE username = %s AND password_hash = %s", (username, Security.hash(password)))
-                result = db_cursor.fetchone()
-        if result:
-            return result[0]
-        return None
-    
-    def add_user(self, username, password, role):
+class Users(BaseModel):
+    def __init__(self):
+        super().__init__("users")  # table name
+
+    def insert(self, username, password, role):
         password_hash = Security.hash(password)
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
@@ -42,48 +32,105 @@ class Users:
                     (username, password_hash, role)
                 )
             db_conn.commit()
-            return True
+            return db_cursor.rowcount > 0
 
-    def get_all_users(self):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor(dictionary=True) as db_cursor:
-                db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
-                users = db_cursor.fetchall()
-        return users
-    
-    def get_all_users(self):
-        with Connection.Database() as db_conn:
-            with db_conn.cursor(dictionary=True) as db_cursor:
-                db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
-                users = db_cursor.fetchall()
-        return users
-    
-    def delete_user(self, user_name):
+    def update(self, username, new_password, new_role):
+        password_hash = Security.hash(new_password)
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("DELETE FROM users WHERE username = %s", (user_name,))
-            db_conn.commit()
-            return True
-        
-    def update_user(self, username, new_password, new_role):
-       
-        with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
-           
                 db_cursor.execute(
                     "UPDATE users SET password_hash=%s, role=%s WHERE username=%s",
-                    (new_password, new_role, username)
+                    (password_hash, new_role, username)
                 )
-                db_conn.commit()
+            db_conn.commit()
             return db_cursor.rowcount > 0
-        
-    def change_password(self, user_id, new_password):
-        new_password_hash = Security.hash(new_password)
+
+    def authenticate(self, username, password):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
-                db_cursor.execute("UPDATE users SET password_hash = %s WHERE user_id = %s", (new_password_hash, user_id))
+                db_cursor.execute(
+                    "SELECT role FROM users WHERE username = %s AND password_hash = %s",
+                    (username, Security.hash(password))
+                )
+                result = db_cursor.fetchone()
+        return result[0] if result else None
+
+    def change_password(self, user_id, new_password):
+        password_hash = Security.hash(new_password)
+        with Connection.Database() as db_conn:
+            with db_conn.cursor() as db_cursor:
+                db_cursor.execute(
+                    "UPDATE users SET password_hash = %s WHERE user_id = %s",
+                    (password_hash, user_id)
+                )
             db_conn.commit()
-            return True
+            return db_cursor.rowcount > 0
+  
+# class Users:
+    
+#     def __init__(self):
+#         pass
+
+#     def authenticate(self, username, password):
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor() as db_cursor:
+#                 db_cursor.execute("SELECT role FROM users WHERE username = %s AND password_hash = %s", (username, Security.hash(password)))
+#                 result = db_cursor.fetchone()
+#         if result:
+#             return result[0]
+#         return None
+    
+#     def add_user(self, username, password, role):
+#         password_hash = Security.hash(password)
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor() as db_cursor:
+#                 db_cursor.execute(
+#                     "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
+#                     (username, password_hash, role)
+#                 )
+#             db_conn.commit()
+#             return True
+
+#     def get_all_users(self):
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor(dictionary=True) as db_cursor:
+#                 db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
+#                 users = db_cursor.fetchall()
+#         return users
+    
+#     def get_all_users(self):
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor(dictionary=True) as db_cursor:
+#                 db_cursor.execute("SELECT user_id, username, role, created_at FROM users")
+#                 users = db_cursor.fetchall()
+#         return users
+    
+#     def delete_user(self, user_name):
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor() as db_cursor:
+#                 db_cursor.execute("DELETE FROM users WHERE username = %s", (user_name,))
+#             db_conn.commit()
+#             return True
+        
+#     def update_user(self, username, new_password, new_role):
+       
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor() as db_cursor:
+           
+#                 db_cursor.execute(
+#                     "UPDATE users SET password_hash=%s, role=%s WHERE username=%s",
+#                     (new_password, new_role, username)
+#                 )
+#                 db_conn.commit()
+#             return db_cursor.rowcount > 0
+        
+#     def change_password(self, user_id, new_password):
+#         new_password_hash = Security.hash(new_password)
+#         with Connection.Database() as db_conn:
+#             with db_conn.cursor() as db_cursor:
+#                 db_cursor.execute("UPDATE users SET password_hash = %s WHERE user_id = %s", (new_password_hash, user_id))
+#             db_conn.commit()
+#             return True
         
 class Teachers:
     def __init__(self):
@@ -163,7 +210,7 @@ class ClassRoom(BaseModel):
                     (classroom_code, capacity, has_ac, has_whiteboard, has_screen)
                 )
             db_conn.commit()
-            return True
+            return db_cursor.rowcount > 0
 
     def update(self, classroom_code, capacity, has_ac, has_whiteboard, has_screen):
         with Connection.Database() as db_conn:
@@ -172,7 +219,7 @@ class ClassRoom(BaseModel):
                     (capacity, has_ac, has_whiteboard, has_screen, classroom_code)
                 )
             db_conn.commit()
-            return True
+            return db_cursor.rowcount > 0
         
 class Classes:
     def __init__(self):

@@ -1,15 +1,16 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
+from Src.BaseRegistration import BaseRegistration
 from Src.db.Schema import Users
 
-class UserRegistration:
+class UserRegistration(BaseRegistration):
 
-    def __init__(self):
+    def __init__(self, entity_name="User"):
+        super().__init__(model=Users(), entity_name=entity_name, key_column="username")
         self.reg_window = tk.Toplevel()
-        self._users = Users()
         self.selected_username = None
         
-        self.reg_window.title("User Registration")
+        self.reg_window.title(f"{entity_name} Registration")
         self.reg_window.resizable(False, False)
 
         # --- Form Frame ---
@@ -75,9 +76,9 @@ class UserRegistration:
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
         self.tree.bind("<Button-1>", self.on_tree_item_click)
         self.tree.pack(fill="both", expand=True)
+        self.reg_window.bind("<Return>", self.save_record)
 
         self.load_records()
-        self.reg_window.bind("<Return>", self.save_record)
 
     # --- CRUD Operations ---
     def save_record(self, event=None):
@@ -89,7 +90,7 @@ class UserRegistration:
             messagebox.showerror("Error", "Username and password are required")
             return
 
-        if self._users.add_user(username, password, role):
+        if self._model.insert(username, password, role):
             messagebox.showinfo("Success", "User registered successfully!")
             self.load_records()
         else:
@@ -99,26 +100,10 @@ class UserRegistration:
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        users = self._users.get_all_users()
+        users = self._model.select_all()
         for u in users:
             self.tree.insert("", "end", values=(u["username"], u["role"], "🗑️ Delete"))
         self.clear_form()
-
-    def on_tree_item_click(self, event):
-        region = self.tree.identify("region", event.x, event.y)
-        if region != "cell":
-            return
-
-        row_id = self.tree.identify_row(event.y)
-        col = self.tree.identify_column(event.x)
-        if not row_id or not col:
-            return
-
-        values = self.tree.item(row_id, "values")
-        username = values[0]
-
-        if col == "#3":  # Delete column
-            self.delete_record(username)
 
     def on_tree_select(self, event):
         selected = self.tree.selection()
@@ -151,23 +136,11 @@ class UserRegistration:
             messagebox.showerror("Error", "Password cannot be empty when updating")
             return
 
-        if self._users.update_user(username, password, role):
+        if self._model.update(username, password, role):
             messagebox.showinfo("Success", "User updated successfully!")
             self.load_records()
         else:
             messagebox.showerror("Error", "Failed to update user.")
-
-    def delete_record(self, username=None):
-        if messagebox.askyesno("Delete", "Are you sure you want to delete this user?"):
-            row_value = username if username else self.selected_username
-            if not row_value:
-                messagebox.showerror("Error", "No user selected")
-                return
-            if self._users.delete_user(row_value):
-                messagebox.showinfo("Success", "User deleted successfully!")
-                self.load_records()
-            else:
-                messagebox.showerror("Error", "Failed to delete user.")
 
     def clear_form(self):
         self.username_entry.config(state="normal")
