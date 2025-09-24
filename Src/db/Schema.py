@@ -90,7 +90,6 @@ class Teachers(BaseModel):
                 )
             db_conn.commit()
             return True
-
         
 class Students(BaseModel):
     def __init__(self):
@@ -126,6 +125,12 @@ class Students(BaseModel):
                 )
             db_conn.commit()
             return True
+        
+    def select_by_id(self,student_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM students WHERE student_id = %s", (student_id,))
+                return db_cursor.fetchone()
         
     def select_by_contact(self, contact_no):
         with Connection.Database() as db_conn:
@@ -188,7 +193,12 @@ class Classes(BaseModel):
                 )
             db_conn.commit()
             return True
-
+        
+    def select_by_id(self,class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM classes WHERE class_id = %s", (class_id,))
+                return db_cursor.fetchone()
 
 class Enrollments(BaseModel):
     def __init__(self):
@@ -217,7 +227,15 @@ class Enrollments(BaseModel):
                 )
             db_conn.commit()
             return True
-
+        
+    def select_by_class(self, class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute(
+                    "SELECT student_id FROM enrollments WHERE class_id = %s",
+                    (class_id,)
+                )
+                return db_cursor.fetchall()
 
 class Payments(BaseModel):
     def __init__(self):
@@ -252,7 +270,6 @@ class Payments(BaseModel):
             db_conn.commit()
             return True
 
-
 class Attendance(BaseModel):
     def __init__(self):
         super().__init__("attendance")
@@ -285,7 +302,6 @@ class Attendance(BaseModel):
             db_conn.commit()
             return True
 
-
 class TuteDistribution(BaseModel):
     def __init__(self):
         super().__init__("tute_distribution")
@@ -317,7 +333,6 @@ class TuteDistribution(BaseModel):
                 )
             db_conn.commit()
             return True
-
 
 class BulkUploads(BaseModel):
     def __init__(self):
