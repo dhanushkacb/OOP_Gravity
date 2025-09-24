@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog, ttk
 from datetime import datetime
 from Src.BaseRegistration import BaseRegistration
-from Src.db.Schema import Classes, Students, Enrollments
+from Src.db.Schema import Classes, Students, Enrollments, Teachers
 from Src.log.Logger import Logger
 
 
@@ -63,7 +63,6 @@ class StudentAttendanceSheet(BaseRegistration):
                 messagebox.showerror("Error", "Class ID and Date are required.")
                 return
 
-            # Validate date
             try:
                 selected_date = datetime.strptime(date_str, "%Y-%m-%d").date()
             except ValueError:
@@ -75,15 +74,22 @@ class StudentAttendanceSheet(BaseRegistration):
                 self.tree.delete(row)
             self.sheet_data = []
 
-            # Fetch class info
+            # --- Class info ---
             class_info = self._model.select_by_id(class_id)
             if not class_info:
                 messagebox.showerror("Error", f"No class found with ID {class_id}")
                 return
 
-            subject = class_info["subject"]
+            subject = class_info.get("subject", "")
+            teacher_id = class_info.get("teacher_id")
 
-            # Fetch enrolled students
+            teacher_name = ""
+            if teacher_id:
+                teacher = Teachers().select_by_id(teacher_id)  
+                if teacher:
+                    teacher_name = teacher.get("name", "")
+
+            # --- Enrolled students ---
             enrolled = Enrollments().select_by_class(class_id)
             if not enrolled:
                 messagebox.showwarning("No Students", "No students enrolled for this class.")
@@ -95,18 +101,22 @@ class StudentAttendanceSheet(BaseRegistration):
                     row = {
                         "class_id": class_id,
                         "subject": subject,
+                        "teacher": teacher_name,
                         "student_id": student["student_id"],
                         "student_name": student["name"],
                         "date": str(selected_date),
-                        "status": ""
+                        "status": "[ ]"
                     }
                     self.sheet_data.append(row)
-                    self.tree.insert("", "end", values=tuple(row.values()))
+                    self.tree.insert("", "end", values=(row["class_id"], row["subject"], 
+                                                        row["student_id"], row["student_name"], 
+                                                        row["date"], row["status"]))
 
             self.export_btn.config(state="normal")
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Could not generate attendance sheet.\n{e}")
+
 
     def export_sheet(self):
         try:
@@ -122,16 +132,28 @@ class StudentAttendanceSheet(BaseRegistration):
             if not file_path:
                 return
 
-            header = "Class_ID | Subject | Student Id | Student Name | Date | Status\n" + "-"*90 + "\n"
+            # Use first row for class metadata
+            first = self.sheet_data[0]
+            header = (
+                f"Class: {first['class_id']}\n"
+                f"Subject: {first['subject']}\n"
+                f"Date: {first['date']}\n"
+                f"Teacher: {first['teacher']}\n"
+                + "-" * 43 + "\n"
+                "Student Id\t\t| Student Name\t\t| Status\n"
+                + "-" * 40 + "\n"
+            )
+
             lines = [
-                f"{row['class_id']} | {row['subject']} | {row['student_id']} | {row['student_name']} | {row['date']} | {row['status']}"
-                for row in self.sheet_data
+                f"{s['student_id']}\t|{s['student_name']}\t| {s['status']}"
+                for s in self.sheet_data
             ]
 
             with open(file_path, "w", encoding="utf-8") as f:
-                f.write(header + "\n".join(lines))
+                f.write(header + "\n".join(lines) + "\n")
 
             messagebox.showinfo("Success", f"Attendance sheet saved successfully!\nFile: {file_path}")
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Could not export attendance sheet.\n{e}")
+

@@ -91,6 +91,12 @@ class Teachers(BaseModel):
             db_conn.commit()
             return True
         
+    def select_by_id(self,id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM teachers WHERE teacher_id = %s", (id,))
+                return db_cursor.fetchone()
+        
 class Students(BaseModel):
     def __init__(self):
         super().__init__("students")
