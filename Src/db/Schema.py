@@ -127,6 +127,13 @@ class Students(BaseModel):
             db_conn.commit()
             return True
         
+    def select_by_contact(self, contact_no):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT student_id FROM students WHERE contact_no = %s",(contact_no,)
+                )
+                return db_cursor.fetchone()
+        
 class ClassRoom(BaseModel):
     def __init__(self):
         super().__init__("classrooms")
