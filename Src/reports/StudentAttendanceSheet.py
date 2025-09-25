@@ -61,7 +61,8 @@ class StudentAttendanceSheet(BaseRegistration):
 
     def generate_sheet(self):
         try:
-            class_id = self.class_id_combo.get().strip()
+            selected_text = self.class_id_combo.get().strip()
+            class_id = self.class_map.get(selected_text)
             date_str = self.date_entry.get().strip()
 
             if not class_id or not date_str:
