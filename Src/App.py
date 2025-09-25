@@ -4,6 +4,7 @@ from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
 from Src.ImportStudentData import ImportStudentData
 from Src.ImportStudentAttendance import ImportStudentAttendance
+from Src.PaymentVerification import PaymentVerification
 from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentPayments import StudentPayments
 from Src.StudentRegistration import StudentRegistration
@@ -55,7 +56,7 @@ class App:
         operation_menu = tk.Menu(menubar, tearoff=0)
         operation_menu.add_command(label="Student Enrollment", command=self.open_student_enrollments)
         operation_menu.add_command(label="Student Payments", command=self.open_student_payments)
-        operation_menu.add_command(label="Class Management", command=self.not_implemented)
+        operation_menu.add_command(label="Payment Verification", command=self.verify_payment)
         menubar.add_cascade(label="Operation", menu=operation_menu)
 
         # Process Menu
@@ -116,6 +117,9 @@ class App:
 
     def report_attendance_sheet(self):
         StudentAttendanceSheet()
+
+    def verify_payment(self):
+        PaymentVerification()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")

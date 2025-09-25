@@ -291,6 +291,33 @@ class Payments(BaseModel):
             db_conn.commit()
             return True
 
+    def has_paid(self, student_id, class_id, year, month):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute(
+                    """
+                    SELECT payment_id FROM payments WHERE student_id = %s 
+                        AND class_id = %s 
+                        AND year = %s 
+                        AND month = %s
+                    """,
+                    (student_id, class_id, year, month)
+                )
+                return db_cursor.fetchone() is not None
+
+    def get_payment(self, student_id, class_id, year, month):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute(
+                    """
+                    SELECT * FROM payments WHERE student_id = %s 
+                        AND class_id = %s 
+                        AND year = %s 
+                        AND month = %s
+                    """,
+                    (student_id, class_id, year, month)
+                )
+                return db_cursor.fetchone()
 
 
 class Attendance(BaseModel):
