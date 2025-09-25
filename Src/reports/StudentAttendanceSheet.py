@@ -11,7 +11,7 @@ class StudentAttendanceSheet(BaseRegistration):
         super().__init__(model=Classes(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()
         self.reg_window.title(f"{entity_name} Generator")
-        self.reg_window.geometry("800x600")
+        self.reg_window.geometry("1000x600")
         self.reg_window.resizable(True, True)
 
         # --- Frame ---
@@ -20,21 +20,26 @@ class StudentAttendanceSheet(BaseRegistration):
 
         # Class ID input
         tk.Label(self.form_frame, text="Class ID:", anchor="w").grid(row=0, column=0, sticky="w", padx=5, pady=5)
-        self.class_id_entry = tk.Entry(self.form_frame, width=15)
-        self.class_id_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.class_id_var = tk.StringVar()
+        self.class_id_combo = ttk.Combobox(self.form_frame, textvariable=self.class_id_var, state="readonly", width=30)
+        self.class_id_combo.grid(row=0, column=1, padx=5, pady=5)
 
+        classes = self._model.select_class_details()
+        self.class_map = {f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}": c["class_id"] for c in classes}
+        self.class_id_combo["values"] = list(self.class_map.keys())
+        
         # Date input
-        tk.Label(self.form_frame, text="Date (YYYY-MM-DD):", anchor="w").grid(row=0, column=2, sticky="w", padx=5, pady=5)
+        tk.Label(self.form_frame, text="Date (YYYY-MM-DD):", anchor="w").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.date_entry = tk.Entry(self.form_frame, width=15)
         self.date_entry.insert(0, datetime.today().strftime("%Y-%m-%d"))
-        self.date_entry.grid(row=0, column=3, padx=5, pady=5)
+        self.date_entry.grid(row=1, column=1, padx=5, pady=5)
 
         # Buttons
         self.generate_btn = tk.Button(self.form_frame, text="Generate Sheet", width=20, command=self.generate_sheet)
-        self.generate_btn.grid(row=0, column=4, padx=5)
+        self.generate_btn.grid(row=1, column=2, padx=5)
 
         self.export_btn = tk.Button(self.form_frame, text="Export to File", width=20, command=self.export_sheet, state="disabled")
-        self.export_btn.grid(row=0, column=5, padx=5)
+        self.export_btn.grid(row=1, column=3, padx=5)
 
         # Table Frame
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
@@ -56,7 +61,7 @@ class StudentAttendanceSheet(BaseRegistration):
 
     def generate_sheet(self):
         try:
-            class_id = self.class_id_entry.get().strip()
+            class_id = self.class_id_combo.get().strip()
             date_str = self.date_entry.get().strip()
 
             if not class_id or not date_str:

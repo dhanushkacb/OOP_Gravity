@@ -90,7 +90,7 @@ class StudentEnrollments(BaseRegistration):
     def load_dropdowns(self):
         try:
             students = Students().select_all()
-            classes = Classes().select_calss_details()
+            classes = Classes().select_clas_details()
 
             self.student_map = {f"{s['student_id']} - {s['name']}": s["student_id"] for s in students}
             self.class_map = {f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}": c["class_id"] for c in classes}
@@ -213,7 +213,7 @@ class StudentEnrollments(BaseRegistration):
 
     def get_classes(self):
         try:
-            return Classes().select_calss_details()
+            return Classes().select_class_details()
         except Exception as e:
             Logger.log(e)
             return []
