@@ -1,3 +1,4 @@
 class AccessInfo:
-    USER_NAME=None
+    USER_ID=None
+    USERNAME=None
     ROLE=None

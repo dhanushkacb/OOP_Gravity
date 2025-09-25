@@ -51,11 +51,14 @@ class LoginWindow:
     def login(self, event=None):
         username = self.username_entry.get().strip()
         password = self.password_entry.get().strip()
-        role = self._users.authenticate(username, password)
+        auth = self._users.authenticate(username, password)
 
-        if role:
+        if auth:
+            user_id = auth["user_id"]
+            role = auth["role"]
+            AccessInfo.USER_ID=user_id
+            AccessInfo.USERNAME=username
             AccessInfo.ROLE=role
-            AccessInfo.USER_NAME=username
             self.on_login_success(self.root, role)
         else:
             messagebox.showerror("Error", "Invalid credentials!")
