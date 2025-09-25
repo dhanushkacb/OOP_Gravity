@@ -157,3 +157,4 @@ class StudentAttendanceSheet(BaseRegistration):
             Logger.log(e)
             messagebox.showerror("Error", f"Could not export attendance sheet.\n{e}")
 
+
