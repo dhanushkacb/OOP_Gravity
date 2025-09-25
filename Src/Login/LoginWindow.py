@@ -3,6 +3,7 @@ import os
 from tkinter import messagebox
 from Src.db.Schema import Users
 from Src.config.Settings import Settings
+from Src.log.Logger import Logger
 from Src.login import AccessInfo
 
 
@@ -11,7 +12,7 @@ class LoginWindow:
         self._users = Users()
         self.root = root
         self.root.title("GravityCore Login")
-        self.root.geometry("450x220")
+        self.root.geometry("500x300")
         self.on_login_success = on_login_success
 
         # Main frame with border
@@ -19,18 +20,13 @@ class LoginWindow:
         self.form_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Title label
-        tk.Label(
-            self.form_frame,
-            text="Login"
-        ).grid(row=0, column=0, columnspan=2, pady=(0, 15))
-
-        
-
-        image_path = "Src/img/login.png"  # PNG or GIF only
-        photo = tk.PhotoImage(file=image_path)
-        img_label = tk.Label(self.form_frame, image=photo)
-        img_label.image = photo  # Keep a reference!
-        img_label.pack(pady=10)  # Or use .grid() as needed
+        try:
+            self.logo = tk.PhotoImage(file="Src/login/login.png")
+            img_label = tk.Label(self.form_frame, image=self.logo).grid(row=0, column=0, columnspan=2, pady=(0, 15))
+            img_label.pack(pady=10)
+        except Exception as e:
+            Logger.log(f"Image load failed: {e}")
+             
         # Username
         tk.Label(self.form_frame, text="Username:", anchor="w").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.username_entry = tk.Entry(self.form_frame, width=Settings.ENTRY_WIDTH)
@@ -70,4 +66,5 @@ class LoginWindow:
             AccessInfo.ROLE=role
             self.on_login_success(self.root, role)
         else:
+            Logger.log(f"Invalid credentials!")
             messagebox.showerror("Error", "Invalid credentials!")
