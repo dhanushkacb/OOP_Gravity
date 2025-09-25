@@ -103,10 +103,10 @@ class StudentPayments(BaseRegistration):
     def load_dropdowns(self):
         try:
             students = Students().select_all()
-            classes = Classes().select_all()
+            classes = Classes().select_class_details()
 
             self.student_map = {f"{s['student_id']} - {s['name']}": s["student_id"] for s in students}
-            self.class_map = {f"{c['class_id']} - {c['subject']}": c["class_id"] for c in classes}
+            self.class_map = {f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}": c["class_id"] for c in classes}
 
             self.student_menu["values"] = list(self.student_map.keys())
             self.class_menu["values"] = list(self.class_map.keys())

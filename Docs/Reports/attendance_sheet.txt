@@ -1,0 +1,8 @@
+Class: 1
+Subject: Physics
+Date: 2025-09-24
+Teacher: Anuradha
+-------------------------------------------
+Student Id		| Student Name		| Status
+----------------------------------------
+1	|Amali	| [ ]

@@ -48,13 +48,13 @@ class Users(BaseModel):
 
     def authenticate(self, username, password):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute(
-                    "SELECT role FROM users WHERE username = %s AND password_hash = %s",
+                    "SELECT user_id,role FROM users WHERE username = %s AND password_hash = %s",
                     (username, Security.hash(password))
                 )
-                result = db_cursor.fetchone()
-        return result[0] if result else None
+                return db_cursor.fetchone()
+
 
     def change_password(self, user_id, new_password):
         password_hash = Security.hash(new_password)
@@ -90,7 +90,12 @@ class Teachers(BaseModel):
                 )
             db_conn.commit()
             return True
-
+        
+    def select_by_id(self,id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM teachers WHERE teacher_id = %s", (id,))
+                return db_cursor.fetchone()
         
 class Students(BaseModel):
     def __init__(self):
@@ -126,6 +131,19 @@ class Students(BaseModel):
                 )
             db_conn.commit()
             return True
+        
+    def select_by_id(self,student_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM students WHERE student_id = %s", (student_id,))
+                return db_cursor.fetchone()
+        
+    def select_by_contact(self, contact_no):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT student_id FROM students WHERE contact_no = %s",(contact_no,)
+                )
+                return db_cursor.fetchone()
         
 class ClassRoom(BaseModel):
     def __init__(self):
@@ -181,7 +199,22 @@ class Classes(BaseModel):
                 )
             db_conn.commit()
             return True
-
+        
+    def select_by_id(self,class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM classes WHERE class_id = %s", (class_id,))
+                return db_cursor.fetchone()
+            
+    def select_class_details(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("""
+                    SELECT c.*, t.name AS teacher_name
+                    FROM classes c
+                    INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                """)
+                return db_cursor.fetchall()
 
 class Enrollments(BaseModel):
     def __init__(self):
@@ -210,7 +243,15 @@ class Enrollments(BaseModel):
                 )
             db_conn.commit()
             return True
-
+        
+    def select_by_class(self, class_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute(
+                    "SELECT student_id FROM enrollments WHERE class_id = %s",
+                    (class_id,)
+                )
+                return db_cursor.fetchall()
 
 class Payments(BaseModel):
     def __init__(self):
@@ -245,7 +286,6 @@ class Payments(BaseModel):
             db_conn.commit()
             return True
 
-
 class Attendance(BaseModel):
     def __init__(self):
         super().__init__("attendance")
@@ -277,7 +317,6 @@ class Attendance(BaseModel):
                 )
             db_conn.commit()
             return True
-
 
 class TuteDistribution(BaseModel):
     def __init__(self):
@@ -311,35 +350,34 @@ class TuteDistribution(BaseModel):
             db_conn.commit()
             return True
 
-
 class BulkUploads(BaseModel):
     def __init__(self):
         super().__init__("bulk_uploads")
 
-    def insert(self, upload_type, file_name, uploaded_by):
+    def insert(self, upload_type, file_name, success_count,failed_count,uploaded_by):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     INSERT INTO bulk_uploads 
-                    (upload_type, file_name, uploaded_by) 
-                    VALUES (%s, %s, %s)
+                    (upload_type, file_name,success_count,failed_count, uploaded_by) 
+                    VALUES (%s, %s, %s,%s,%s)
                     """,
-                    (upload_type, file_name, uploaded_by)
+                    (upload_type, file_name, success_count,failed_count,uploaded_by)
                 )
             db_conn.commit()
             return True
 
-    def update(self, upload_id, upload_type, file_name, uploaded_by):
+    def update(self, upload_id, upload_type, file_name, success_count,failed_count,uploaded_by):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE bulk_uploads 
-                    SET upload_type=%s, file_name=%s, uploaded_by=%s 
+                    SET upload_type=%s, file_name=%s,success_coun%s,failed_count=%s, uploaded_by=%s 
                     WHERE upload_id=%s
                     """,
-                    (upload_type, file_name, uploaded_by, upload_id)
+                    (upload_type, file_name, success_count,failed_count,uploaded_by, upload_id)
                 )
             db_conn.commit()
             return True
@@ -378,10 +416,7 @@ class SystemSettings:
     
     def get_subjects(self):
         return self.get_settings("SUBJECTS")
-    
-    def get_attendance_status(self):
-        return self.get_settings("ATTENDANCE")
-    
+     
     def get_upload_types(self):
         return self.get_settings("UPLOAD_TYPE")
     

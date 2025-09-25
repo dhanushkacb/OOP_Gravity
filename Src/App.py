@@ -3,6 +3,7 @@ from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
 from Src.ImportStudentData import ImportStudentData
+from Src.ImportStudentAttendance import ImportStudentAttendance
 from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentPayments import StudentPayments
 from Src.StudentRegistration import StudentRegistration
@@ -11,6 +12,7 @@ from Src.login.LoginWindow import LoginWindow
 from Src.db.CreateDatabase import CreateDatabase
 from Src.log.Logger import Logger
 from Src.UserRegistration import UserRegistration
+from Src.reports.StudentAttendanceSheet import StudentAttendanceSheet
 from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 
 class App:
@@ -46,7 +48,7 @@ class App:
         feature_menu = tk.Menu(menubar, tearoff=0)
         feature_menu.add_command(label="Student Management", command=self.open_student_registration)
         feature_menu.add_command(label="Teacher Management", command=self.open_teacher_registration)
-        feature_menu.add_command(label="Class Management", command=self.open_class_schedule)
+        feature_menu.add_command(label="Class Schedule", command=self.open_class_schedule)
         menubar.add_cascade(label="Features", menu=feature_menu)
 
         # Operation Menu
@@ -60,6 +62,7 @@ class App:
         process_menu = tk.Menu(menubar, tearoff=0)
         process_menu.add_command(label="Import Student Record", command=self.open_import_students)
         process_menu.add_command(label="Import Monthly Payments", command=self.open_import_monthly_payments)
+        process_menu.add_command(label="Import Attendance Records", command=self.open_import_attendance_records)
         menubar.add_cascade(label="Process", menu=process_menu)
 
 
@@ -67,6 +70,7 @@ class App:
         report_menu = tk.Menu(menubar, tearoff=0)
         report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
         report_menu.add_command(label="Student Registration", command=self.report_student_registration)
+        report_menu.add_command(label="Attendance Sheet",command=self.report_attendance_sheet)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -104,8 +108,14 @@ class App:
     def open_import_monthly_payments(self):
         self.not_implemented()
 
+    def open_import_attendance_records(self):
+        ImportStudentAttendance()
+
     def report_student_registration(self):
         StudentRegistrationReport()
+
+    def report_attendance_sheet(self):
+        StudentAttendanceSheet()
 
 def start_main_app(root, role):
     Logger.log("User logged in.")

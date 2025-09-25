@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from Src.db.Schema import SystemSettings
+from Src.db.Schema import BulkUploads, SystemSettings
 from Src.log.Logger import Logger
+from Src.login import AccessInfo
 
 class BaseRegistration:
     def __init__(self, model, entity_name, key_column):
@@ -47,4 +48,17 @@ class BaseRegistration:
 
         if col == f"#{len(self.tree['columns'])}":  # last column = delete
             self.delete_record(record_key)
+
+    def import_records(self,upload_type,file_path,success_count,failed_count):
+        try:  
+            BulkUploads().insert(
+            upload_type=upload_type,
+            file_name=file_path.split("/")[-1],
+            success_count=success_count,
+            failed_count=failed_count,
+            uploaded_by=AccessInfo.USER_ID
+        )
+
+        except Exception as e:
+            Logger.log(f"Failed to record bulk upload log: {e}")
 
