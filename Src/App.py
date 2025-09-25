@@ -15,6 +15,7 @@ from Src.log.Logger import Logger
 from Src.UserRegistration import UserRegistration
 from Src.reports.StudentAttendanceSheet import StudentAttendanceSheet
 from Src.reports.StudentRegistrationReport import StudentRegistrationReport
+from Src.ImportStudentPayments import ImportStudentPayments
 
 class App:
     def __init__(self, main_window, role):
@@ -107,7 +108,7 @@ class App:
         ImportStudentData()
 
     def open_import_monthly_payments(self):
-        self.not_implemented()
+        ImportStudentPayments()
 
     def open_import_attendance_records(self):
         ImportStudentAttendance()
