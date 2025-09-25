@@ -12,6 +12,7 @@ class ImportStudentAttendance(BaseRegistration):
         self.reg_window.title(entity_name)
         self.reg_window.resizable(False, False)
 
+        self.required_headers = ["student_id", "class_id", "session_date", "status"]
         self.file_path = None
         self.preview_data = []
 
@@ -29,7 +30,7 @@ class ImportStudentAttendance(BaseRegistration):
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
         self.table_frame.pack(fill="both", expand=True)
 
-        columns = ("student_id", "class_id", "session_date", "status")
+        columns = tuple(self.required_headers)
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=12)
 
         for col in columns:
@@ -56,16 +57,20 @@ class ImportStudentAttendance(BaseRegistration):
 
             # Read CSV
             with open(self.file_path, "r", newline="", encoding="utf-8") as file:
-                reader = csv.DictReader(file)
+                reader = csv.reader(file)
+                headers = next(reader, None)
+                headers = [h.strip().lower() for h in headers]
+
+                required = [h.lower() for h in self.required_headers]
+                if not headers or any(h not in headers for h in required):
+                    messagebox.showerror("Error", f"CSV must include headers: {', '.join(self.required_headers)}")
+                    return
+
                 self.preview_data = []
                 for row in reader:
-                    self.preview_data.append(row)
-                    self.tree.insert("", "end", values=(
-                        row.get("student_id", ""),
-                        row.get("class_id", ""),
-                        row.get("session_date", ""),
-                        row.get("status", "")
-                    ))
+                    mapped = dict(zip([h.lower() for h in headers], row))
+                    self.preview_data.append(mapped)
+                    self.tree.insert("", "end", values=tuple(mapped.get(h, "") for h in self.required_headers))
 
             if self.preview_data:
                 self.process_btn.config(state="normal")
@@ -84,6 +89,8 @@ class ImportStudentAttendance(BaseRegistration):
                 return
 
             success_count = 0
+            failed_records = []
+
             for row in self.preview_data:
                 try:
                     self._model.insert(
@@ -94,9 +101,30 @@ class ImportStudentAttendance(BaseRegistration):
                     )
                     success_count += 1
                 except Exception as e:
+                    row["error"] = str(e)
+                    failed_records.append(row)
                     Logger.log(f"Failed to insert record: {row} -> {e}")
 
-            messagebox.showinfo("Import Complete", f"Successfully imported {success_count} attendance records.")
+            if failed_records:
+                failed_file = f"{self.entity_name}_failed_records.csv"
+                with open(failed_file, "w", encoding="utf-8", newline="") as f:
+                    writer = csv.writer(f)
+                    headers = self.required_headers + ["error"]
+                    writer.writerow(headers)
+                    for row in failed_records:
+                        values = [row.get(h, "") for h in self.required_headers]
+                        values.append(row.get("error", ""))
+                        writer.writerow(values)
+
+            # Log bulk upload
+            self.import_records(
+                upload_type=self.entity_name,
+                file_path=self.file_path,
+                success_count=success_count,
+                failed_count=len(failed_records)
+            )
+
+            messagebox.showinfo("Import Complete", f"Successfully imported {success_count}, failed {len(failed_records)} attendance records.")
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Import failed.\n{e}")

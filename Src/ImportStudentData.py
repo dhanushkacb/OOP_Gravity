@@ -126,7 +126,7 @@ class ImportStudentData(BaseRegistration):
                     Logger.log(f"Failed to insert record: {row} -> {e}")
 
             if failed_records:
-                failed_file = "failed_imports.csv"
+                failed_file = f"{self.entity_name}_failed_records.csv"
                 with open(failed_file, "w") as f:
                     writer = csv.writer(f)
                     headers = self.required_headers + ["error"]
@@ -143,7 +143,7 @@ class ImportStudentData(BaseRegistration):
                 failed_count=len(failed_records)
             )
 
-            messagebox.showinfo("Import Complete", f"Successfully imported {success_count} students.")
+            messagebox.showinfo("Import Complete", f"Successfully imported {success_count}, failed {len(failed_records)} students.")
         except Exception as e:
             Logger.log(e)
             messagebox.showerror("Error", f"Import failed.\n{e}")
