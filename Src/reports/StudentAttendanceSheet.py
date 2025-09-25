@@ -139,13 +139,13 @@ class StudentAttendanceSheet(BaseRegistration):
                 f"Subject: {first['subject']}\n"
                 f"Date: {first['date']}\n"
                 f"Teacher: {first['teacher']}\n"
-                + "-" * 43 + "\n"
+                + "-" * 45 + "\n"
                 "Student Id\t\t| Student Name\t\t| Status\n"
-                + "-" * 40 + "\n"
+                + "-" * 45 + "\n"
             )
 
             lines = [
-                f"{s['student_id']}\t|{s['student_name']}\t| {s['status']}"
+                f"{s['student_id']}\t\t\t\t|{s['student_name']}\t\t\t\t| {s['status']}"
                 for s in self.sheet_data
             ]
 

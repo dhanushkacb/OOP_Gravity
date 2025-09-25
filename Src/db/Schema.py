@@ -205,6 +205,16 @@ class Classes(BaseModel):
             with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute("SELECT * FROM classes WHERE class_id = %s", (class_id,))
                 return db_cursor.fetchone()
+            
+    def select_calss_details(self):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("""
+                    SELECT c.*, t.name AS teacher_name
+                    FROM classes c
+                    INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                """)
+                return db_cursor.fetchall()
 
 class Enrollments(BaseModel):
     def __init__(self):

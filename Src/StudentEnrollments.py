@@ -90,10 +90,10 @@ class StudentEnrollments(BaseRegistration):
     def load_dropdowns(self):
         try:
             students = Students().select_all()
-            classes = Classes().select_all()
+            classes = Classes().select_calss_details()
 
             self.student_map = {f"{s['student_id']} - {s['name']}": s["student_id"] for s in students}
-            self.class_map = {f"{c['class_id']} - {c['subject']}": c["class_id"] for c in classes}
+            self.class_map = {f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}": c["class_id"] for c in classes}
 
             self.student_menu["values"] = list(self.student_map.keys())
             self.class_menu["values"] = list(self.class_map.keys())
@@ -153,8 +153,21 @@ class StudentEnrollments(BaseRegistration):
         values = item["values"]
 
         self.selected_key = values[0]
-        self.student_var.set(values[1])
-        self.class_var.set(values[2])
+
+        # student_id (reset combobox)
+        student_id = values[1]
+        students = [f"{s['student_id']} - {s['name']}" for s in self.get_students()]
+        match = next((t for t in students if t.startswith(str(student_id))), None)
+        if match:
+            self.student_var.set(match)
+
+        # class_id (reset combobox)
+        class_id = values[1]
+        classes = [f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}" for c in self.get_classes()]
+        match = next((t for t in classes if t.startswith(str(class_id))), None)
+        if match:
+            self.class_var.set(match)
+
         self.date_entry.delete(0, tk.END)
         self.date_entry.insert(0, values[3])
 
@@ -189,3 +202,18 @@ class StudentEnrollments(BaseRegistration):
         self.date_entry.insert(0, datetime.now().strftime("%Y-%m-%d"))
         self.selected_key = None
         self.submit_btn.config(text="Save", command=self.save_record)
+
+    def get_students(self):
+        try:
+            from Src.db.Schema import Teachers
+            return Students().select_all()
+        except Exception as e:
+            Logger.log(e)
+            return []
+
+    def get_classes(self):
+        try:
+            return Classes().select_calss_details()
+        except Exception as e:
+            Logger.log(e)
+            return []

@@ -48,7 +48,7 @@ class App:
         feature_menu = tk.Menu(menubar, tearoff=0)
         feature_menu.add_command(label="Student Management", command=self.open_student_registration)
         feature_menu.add_command(label="Teacher Management", command=self.open_teacher_registration)
-        feature_menu.add_command(label="Class Management", command=self.open_class_schedule)
+        feature_menu.add_command(label="Class Schedule", command=self.open_class_schedule)
         menubar.add_cascade(label="Features", menu=feature_menu)
 
         # Operation Menu
