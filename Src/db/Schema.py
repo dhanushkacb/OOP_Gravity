@@ -215,6 +215,12 @@ class Classes(BaseModel):
                     INNER JOIN teachers t ON c.teacher_id = t.teacher_id
                 """)
                 return db_cursor.fetchall()
+            
+    def select_by_teacher(self, teacher_id):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("SELECT * FROM classes WHERE teacher_id=%s", (teacher_id,))
+                return db_cursor.fetchall()
 
 class Enrollments(BaseModel):
     def __init__(self):
@@ -318,6 +324,15 @@ class Payments(BaseModel):
                     (student_id, class_id, year, month)
                 )
                 return db_cursor.fetchone()
+            
+    def select_by_class_and_month(self, class_id, year, month):
+        with Connection.Database() as db_conn:
+            with db_conn.cursor(dictionary=True) as db_cursor:
+                db_cursor.execute("""
+                    SELECT * FROM payments 
+                    WHERE class_id=%s AND year=%s AND month=%s
+                """, (class_id, year, month))
+                return db_cursor.fetchall()
 
 
 class Attendance(BaseModel):

@@ -17,6 +17,7 @@ from Src.reports.StudentAttendanceSheet import StudentAttendanceSheet
 from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 from Src.ImportStudentPayments import ImportStudentPayments
 from Src.reports.PaymentOutstandingReport import PaymentOutstandingReport
+from Src.reports.TeacherIncomeReport import TeacherIncomeReport
 
 class App:
     def __init__(self, main_window, role):
@@ -74,6 +75,7 @@ class App:
         report_menu.add_command(label="Outstanding Payments", command=self.report_outstanding_payments)
         report_menu.add_command(label="Student Registration", command=self.report_student_registration)
         report_menu.add_command(label="Attendance Sheet",command=self.report_attendance_sheet)
+        report_menu.add_command(label="Monthly Collection Summary", command=self.report_monthly_collection)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -123,8 +125,12 @@ class App:
     def report_outstanding_payments(self):
         PaymentOutstandingReport()
 
+    def report_monthly_collection(self):
+        TeacherIncomeReport();
+
     def verify_payment(self):
         PaymentVerification()
+
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
