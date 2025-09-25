@@ -1,5 +1,5 @@
-student_id,class_id,session_date,status,error
-1,1,2025-09-20,1,1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'attendance.student_id'
-2,1,2025-09-20,1,1062 (23000): Duplicate entry '2-1-2025-09-20' for key 'attendance.student_id'
-3,1,2025-09-20,0,"1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`gravity_db`.`attendance`, CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE)"
-4,1,2025-09-20,0,"1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`gravity_db`.`attendance`, CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE)"
+student_id,class_id,session_date,status,tute,error
+1,1,2025-09-20,1,1,1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'attendance.student_id'
+2,1,2025-09-20,1,1,1062 (23000): Duplicate entry '2-1-2025-09-20' for key 'attendance.student_id'
+3,1,2025-09-20,0,0,1062 (23000): Duplicate entry '3-1-2025-09-20' for key 'attendance.student_id'
+4,1,2025-09-20,0,1,1062 (23000): Duplicate entry '4-1-2025-09-20' for key 'attendance.student_id'

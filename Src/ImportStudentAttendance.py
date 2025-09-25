@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import csv
-from Src.db.Schema import Attendance
+from Src.db.Schema import Attendance, TuteDistribution
 from Src.log.Logger import Logger
 from Src.BaseRegistration import BaseRegistration
 
@@ -12,7 +12,7 @@ class ImportStudentAttendance(BaseRegistration):
         self.reg_window.title(entity_name)
         self.reg_window.resizable(False, False)
 
-        self.required_headers = ["student_id", "class_id", "session_date", "status"]
+        self.required_headers = ["student_id", "class_id", "session_date", "status","tute"]
         self.file_path = None
         self.preview_data = []
 
@@ -104,6 +104,19 @@ class ImportStudentAttendance(BaseRegistration):
                     row["error"] = str(e)
                     failed_records.append(row)
                     Logger.log(f"Failed to insert record: {row} -> {e}")
+
+                try:
+                    if row.get("tute") and row.get("tute").strip() == "1":
+                        TuteDistribution().insert(
+                            row.get("student_id"),
+                            row.get("class_id"),
+                            row.get("session_date"),
+                            "Tute Given"
+                        )
+                except Exception as e:
+                    row["error"] = str(e)
+                    Logger.log(f"Failed to insert tute: {row} -> {e}")
+                
 
             if failed_records:
                 failed_file = f"{self.entity_name}_failed_records.csv"

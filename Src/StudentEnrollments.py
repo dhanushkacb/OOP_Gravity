@@ -90,7 +90,7 @@ class StudentEnrollments(BaseRegistration):
     def load_dropdowns(self):
         try:
             students = Students().select_all()
-            classes = Classes().select_clas_details()
+            classes = Classes().select_class_details()
 
             self.student_map = {f"{s['student_id']} - {s['name']}": s["student_id"] for s in students}
             self.class_map = {f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}": c["class_id"] for c in classes}
@@ -162,7 +162,7 @@ class StudentEnrollments(BaseRegistration):
             self.student_var.set(match)
 
         # class_id (reset combobox)
-        class_id = values[1]
+        class_id = values[2]
         classes = [f"{c['class_id']} - {c['subject']} - {c['category']} - {c['class_type']} - {c['teacher_name']}" for c in self.get_classes()]
         match = next((t for t in classes if t.startswith(str(class_id))), None)
         if match:
