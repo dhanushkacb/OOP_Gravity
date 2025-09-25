@@ -15,6 +15,9 @@ from Src.log.Logger import Logger
 from Src.UserRegistration import UserRegistration
 from Src.reports.StudentAttendanceSheet import StudentAttendanceSheet
 from Src.reports.StudentRegistrationReport import StudentRegistrationReport
+from Src.ImportStudentPayments import ImportStudentPayments
+from Src.reports.PaymentOutstandingReport import PaymentOutstandingReport
+from Src.reports.TeacherIncomeReport import TeacherIncomeReport
 
 class App:
     def __init__(self, main_window, role):
@@ -32,7 +35,14 @@ class App:
         self.main_frame = tk.Frame(self.main_window, bg="white")
         self.main_frame.pack(fill="both", expand=True)
 
-        tk.Label(self.main_frame, text=f"Welcome {self.role}", font=("Arial", 16)).pack(pady=20)
+        #tk.Label(self.main_frame, text=f"Welcome {self.role}", font=("Arial", 16)).pack(pady=20)
+        # Title label
+        try:
+            self.logo = tk.PhotoImage(file="Src/login/login.png")
+            img_label = tk.Label(self.main_frame, image=self.logo)
+            img_label.pack(pady=20)
+        except Exception as e:
+            Logger.log(f"Image load failed: {e}")
 
     def create_menu(self):
         menubar = tk.Menu(self.main_window)
@@ -41,7 +51,6 @@ class App:
         config_menu = tk.Menu(menubar, tearoff=0)
         config_menu.add_command(label="User Management", command=self.open_user_registration)
         config_menu.add_command(label="Class Room Management", command=self.open_classroom_registration)
-        config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
 
@@ -69,9 +78,10 @@ class App:
 
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
-        report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
+        report_menu.add_command(label="Outstanding Payments", command=self.report_outstanding_payments)
         report_menu.add_command(label="Student Registration", command=self.report_student_registration)
         report_menu.add_command(label="Attendance Sheet",command=self.report_attendance_sheet)
+        report_menu.add_command(label="Monthly Collection Summary", command=self.report_monthly_collection)
         menubar.add_cascade(label="Reports", menu=report_menu)
 
         self.main_window.config(menu=menubar)
@@ -107,7 +117,7 @@ class App:
         ImportStudentData()
 
     def open_import_monthly_payments(self):
-        self.not_implemented()
+        ImportStudentPayments()
 
     def open_import_attendance_records(self):
         ImportStudentAttendance()
@@ -118,8 +128,15 @@ class App:
     def report_attendance_sheet(self):
         StudentAttendanceSheet()
 
+    def report_outstanding_payments(self):
+        PaymentOutstandingReport()
+
+    def report_monthly_collection(self):
+        TeacherIncomeReport();
+
     def verify_payment(self):
         PaymentVerification()
+
 
 def start_main_app(root, role):
     Logger.log("User logged in.")
