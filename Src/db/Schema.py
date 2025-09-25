@@ -48,13 +48,13 @@ class Users(BaseModel):
 
     def authenticate(self, username, password):
         with Connection.Database() as db_conn:
-            with db_conn.cursor() as db_cursor:
+            with db_conn.cursor(dictionary=True) as db_cursor:
                 db_cursor.execute(
-                    "SELECT role FROM users WHERE username = %s AND password_hash = %s",
+                    "SELECT user_id,role FROM users WHERE username = %s AND password_hash = %s",
                     (username, Security.hash(password))
                 )
-                result = db_cursor.fetchone()
-        return result[0] if result else None
+                return db_cursor.fetchone()
+
 
     def change_password(self, user_id, new_password):
         password_hash = Security.hash(new_password)
@@ -354,30 +354,30 @@ class BulkUploads(BaseModel):
     def __init__(self):
         super().__init__("bulk_uploads")
 
-    def insert(self, upload_type, file_name, uploaded_by):
+    def insert(self, upload_type, file_name, success_count,failed_count,uploaded_by):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     INSERT INTO bulk_uploads 
-                    (upload_type, file_name, uploaded_by) 
-                    VALUES (%s, %s, %s)
+                    (upload_type, file_name,success_count,failed_count, uploaded_by) 
+                    VALUES (%s, %s, %s,%s,%s)
                     """,
-                    (upload_type, file_name, uploaded_by)
+                    (upload_type, file_name, success_count,failed_count,uploaded_by)
                 )
             db_conn.commit()
             return True
 
-    def update(self, upload_id, upload_type, file_name, uploaded_by):
+    def update(self, upload_id, upload_type, file_name, success_count,failed_count,uploaded_by):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE bulk_uploads 
-                    SET upload_type=%s, file_name=%s, uploaded_by=%s 
+                    SET upload_type=%s, file_name=%s,success_coun%s,failed_count=%s, uploaded_by=%s 
                     WHERE upload_id=%s
                     """,
-                    (upload_type, file_name, uploaded_by, upload_id)
+                    (upload_type, file_name, success_count,failed_count,uploaded_by, upload_id)
                 )
             db_conn.commit()
             return True

@@ -136,6 +136,13 @@ class ImportStudentData(BaseRegistration):
                         values.append(row.get("error", "")) 
                         writer.writerow(values)
 
+            self.import_records(
+                upload_type=self.entity_name,
+                file_path=self.file_path,
+                success_count=success_count,
+                failed_count=len(failed_records)
+            )
+
             messagebox.showinfo("Import Complete", f"Successfully imported {success_count} students.")
         except Exception as e:
             Logger.log(e)

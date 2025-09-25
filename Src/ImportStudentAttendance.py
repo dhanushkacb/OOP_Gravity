@@ -1,12 +1,11 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import csv
-from Src.db.Schema import Students
 from Src.db.Schema import Attendance
 from Src.log.Logger import Logger
 from Src.BaseRegistration import BaseRegistration
 
-class StudentAttendanceProcess(BaseRegistration):
+class ImportStudentAttendance(BaseRegistration):
     def __init__(self, entity_name="Mark Attendance", key_column="attendance_id"):
         super().__init__(model=Attendance(), entity_name=entity_name, key_column=key_column)
         self.reg_window = tk.Toplevel()

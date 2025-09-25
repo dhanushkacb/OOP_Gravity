@@ -150,6 +150,8 @@ class CreateDatabase:
                 upload_id INT AUTO_INCREMENT PRIMARY KEY,
                 upload_type VARCHAR(100),
                 file_name VARCHAR(255),
+                success_count INT,
+                failed_count INT,             
                 uploaded_by INT,
                 uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (uploaded_by) REFERENCES Users(user_id)

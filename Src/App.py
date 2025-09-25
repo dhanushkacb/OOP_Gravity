@@ -3,7 +3,7 @@ from tkinter import messagebox
 from Src.ClassRoomRegistration import ClassroomRegistration
 from Src.ClassSchedule import ClassSchedule
 from Src.ImportStudentData import ImportStudentData
-from Src.StudentAttendanceProcess import StudentAttendanceProcess
+from Src.ImportStudentAttendance import ImportStudentAttendance
 from Src.StudentEnrollments import StudentEnrollments
 from Src.StudentPayments import StudentPayments
 from Src.StudentRegistration import StudentRegistration
@@ -109,7 +109,7 @@ class App:
         self.not_implemented()
 
     def open_import_attendance_records(self):
-        StudentAttendanceProcess()
+        ImportStudentAttendance()
 
     def report_student_registration(self):
         StudentRegistrationReport()
