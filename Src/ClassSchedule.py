@@ -86,14 +86,20 @@ class ClassSchedule(BaseRegistration):
         )
         self.classroom_menu.grid(row=6, column=1, padx=5, pady=5, sticky="ew")
 
+        # Fee
+        tk.Label(self.form_frame, text="Fee (per student):", anchor="w").grid(row=7, column=0, sticky="w", padx=5, pady=5)
+        self.fee_var = tk.StringVar()
+        self.fee_entry = tk.Entry(self.form_frame, textvariable=self.fee_var, width=Settings.ENTRY_WIDTH)
+        self.fee_entry.grid(row=7, column=1, padx=5, pady=5, sticky="ew")
+
         # --- Action Buttons ---
         self.submit_btn = tk.Button(self.form_frame, text="Save", command=self.save_record)
         self.delete_btn = tk.Button(self.form_frame, text="Delete", width=20, command=self.delete_record)
         self.clear_btn = tk.Button(self.form_frame, text="Clear", command=self.clear_form)
 
-        self.submit_btn.grid(row=7, column=0, pady=20, padx=5, sticky="ew")
-        self.delete_btn.grid(row=7, column=1, pady=20, padx=5, sticky="ew")
-        self.clear_btn.grid(row=7, column=2, pady=20, padx=5, sticky="ew")
+        self.submit_btn.grid(row=8, column=0, pady=20, padx=5, sticky="ew")
+        self.delete_btn.grid(row=8, column=1, pady=20, padx=5, sticky="ew")
+        self.clear_btn.grid(row=8, column=2, pady=20, padx=5, sticky="ew")
 
         for col in range(3):
             self.form_frame.columnconfigure(col, weight=1, minsize=100)
@@ -102,7 +108,7 @@ class ClassSchedule(BaseRegistration):
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
         self.table_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-        columns = ("class_id", "teacher_id", "subject", "class_type", "category", "time_slot", "classroom", "delete")
+        columns = ("class_id", "teacher_id", "subject", "class_type", "category", "time_slot", "classroom","fee", "delete")
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=6)
 
         # Scrollbar
@@ -132,12 +138,13 @@ class ClassSchedule(BaseRegistration):
             category = self.category_var.get().strip()
             timeslot = self.timeslot_var.get().strip()
             classroom = self.classroom_var.get().strip()
+            fee = float(self.fee_var.get().strip() or 0.00)
 
             if not teacher_id or not subject:
                 messagebox.showerror("Error", "Teacher and Subject are required")
                 return
 
-            if self._model.insert(teacher_id, subject, class_type, category, timeslot, classroom):
+            if self._model.insert(teacher_id, subject, class_type, category, timeslot, classroom,fee):
                 messagebox.showinfo("Success", "Class Schedule saved successfully!")
                 self.load_records()
             else:
@@ -162,6 +169,7 @@ class ClassSchedule(BaseRegistration):
                     c["category"],
                     c["time_slot"],
                     c["classroom"],
+                    c["fee"],
                     "🗑️ Delete"
                 ))
             self.clear_form()
@@ -196,6 +204,7 @@ class ClassSchedule(BaseRegistration):
         self.category_var.set(values[4])
         self.timeslot_var.set(values[5])
         self.classroom_var.set(values[6])
+        self.fee_var.set(values[7])
 
         self.submit_btn.config(text="Update", command=self.update_record)
 
@@ -209,12 +218,13 @@ class ClassSchedule(BaseRegistration):
             category = self.category_var.get().strip()
             timeslot = self.timeslot_var.get().strip()
             classroom = self.classroom_var.get().strip()
+            fee = float(self.fee_var.get().strip() or 0.00)
 
             if not teacher_id or not subject:
                 messagebox.showerror("Error", "Teacher and Subject are required")
                 return
 
-            if self._model.update(self.selected_key, teacher_id, subject, class_type, category, timeslot, classroom):
+            if self._model.update(self.selected_key, teacher_id, subject, class_type, category, timeslot, classroom,fee):
                 messagebox.showinfo("Success", "Class Schedule updated successfully!")
                 self.load_records()
             else:
@@ -233,6 +243,7 @@ class ClassSchedule(BaseRegistration):
         self.category_var.set("")
         self.timeslot_var.set("")
         self.classroom_var.set("")
+        self.fee_var.set("")
         self.selected_key = None
         self.submit_btn.config(text="Save", command=self.save_record)
 

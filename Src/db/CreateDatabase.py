@@ -79,6 +79,7 @@ class CreateDatabase:
                 category VARCHAR(100) NOT NULL,
                 time_slot VARCHAR(50) NOT NULL,
                 classroom VARCHAR(50),
+                fee DECIMAL(10,2) NOT NULL,
                 FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
                     ON DELETE CASCADE ON UPDATE CASCADE
                 ) 
@@ -108,6 +109,8 @@ class CreateDatabase:
                 amount DECIMAL(10,2) NOT NULL,
                 discount_applied DECIMAL(5,2) DEFAULT 0.00,
                 paid_on DATE DEFAULT (CURRENT_DATE),
+                payment_method VARCHAR(255),
+                remarks VARCHAR(255),                            
                 FOREIGN KEY (student_id) REFERENCES students(student_id)
                     ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (class_id) REFERENCES classes(class_id)

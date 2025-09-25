@@ -142,17 +142,17 @@ class StudentAttendanceSheet(BaseRegistration):
             # Use first row for class metadata
             first = self.sheet_data[0]
             header = (
-                f"Class: {first['class_id']}\n"
-                f"Subject: {first['subject']}\n"
-                f"Date: {first['date']}\n"
-                f"Teacher: {first['teacher']}\n"
-                + "-" * 45 + "\n"
-                "Student Id\t\t| Student Name\t\t| Status\n"
-                + "-" * 45 + "\n"
+            f"Class: {first['class_id']}\n"
+            f"Subject: {first['subject']}\n"
+            f"Date: {first['date']}\n"
+            f"Teacher: {first['teacher']}\n"
+            + "-" * 70 + "\n"
+            "Student Id\t| Student Name\t\t\t| Status\t| Tute\n"
+            + "-" * 70 + "\n"
             )
 
             lines = [
-                f"{s['student_id']}\t\t\t\t|{s['student_name']}\t\t\t\t| {s['status']}"
+                f"{s['student_id']}\t\t\t| {s['student_name']}\t\t\t\t\t| {s['status']}\t\t| {s['tute']}"
                 for s in self.sheet_data
             ]
 
