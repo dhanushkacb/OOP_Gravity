@@ -16,6 +16,7 @@ from Src.UserRegistration import UserRegistration
 from Src.reports.StudentAttendanceSheet import StudentAttendanceSheet
 from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 from Src.ImportStudentPayments import ImportStudentPayments
+from Src.reports.PaymentOutstandingReport import PaymentOutstandingReport
 
 class App:
     def __init__(self, main_window, role):
@@ -70,7 +71,7 @@ class App:
 
         # Reports Menu
         report_menu = tk.Menu(menubar, tearoff=0)
-        report_menu.add_command(label="Outstanding Payments", command=self.not_implemented)
+        report_menu.add_command(label="Outstanding Payments", command=self.report_outstanding_payments)
         report_menu.add_command(label="Student Registration", command=self.report_student_registration)
         report_menu.add_command(label="Attendance Sheet",command=self.report_attendance_sheet)
         menubar.add_cascade(label="Reports", menu=report_menu)
@@ -118,6 +119,9 @@ class App:
 
     def report_attendance_sheet(self):
         StudentAttendanceSheet()
+
+    def report_outstanding_payments(self):
+        PaymentOutstandingReport()
 
     def verify_payment(self):
         PaymentVerification()
