@@ -1,8 +1,10 @@
 import tkinter as tk
+import os
 from tkinter import messagebox
 from Src.db.Schema import Users
 from Src.config.Settings import Settings
 from Src.login import AccessInfo
+
 
 class LoginWindow:
     def __init__(self, root, on_login_success):
@@ -22,6 +24,13 @@ class LoginWindow:
             text="Login"
         ).grid(row=0, column=0, columnspan=2, pady=(0, 15))
 
+        
+
+        image_path = "Src/img/login.png"  # PNG or GIF only
+        photo = tk.PhotoImage(file=image_path)
+        img_label = tk.Label(self.form_frame, image=photo)
+        img_label.image = photo  # Keep a reference!
+        img_label.pack(pady=10)  # Or use .grid() as needed
         # Username
         tk.Label(self.form_frame, text="Username:", anchor="w").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.username_entry = tk.Entry(self.form_frame, width=Settings.ENTRY_WIDTH)
