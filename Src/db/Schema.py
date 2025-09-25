@@ -257,34 +257,35 @@ class Payments(BaseModel):
     def __init__(self):
         super().__init__("payments")
 
-    def insert(self, student_id, class_id, month, year, amount, payment_method, remarks=None):
+    def insert(self, student_id, class_id, month, year, amount, discount_applied=0.00):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     INSERT INTO payments 
-                    (student_id, class_id, month, year, amount, payment_method, remarks) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    (student_id, class_id, month, year, amount, discount_applied) 
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     """,
-                    (student_id, class_id, month, year, amount, payment_method, remarks)
+                    (student_id, class_id, month, year, amount, discount_applied)
                 )
             db_conn.commit()
             return True
 
-    def update(self, payment_id, student_id, class_id, month, year, amount, payment_method, remarks=None):
+    def update(self, payment_id, student_id, class_id, month, year, amount, discount_applied=0.00):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE payments 
                     SET student_id=%s, class_id=%s, month=%s, year=%s, amount=%s, 
-                        payment_method=%s, remarks=%s 
+                        discount_applied=%s 
                     WHERE payment_id=%s
                     """,
-                    (student_id, class_id, month, year, amount, payment_method, remarks, payment_id)
+                    (student_id, class_id, month, year, amount, discount_applied, payment_id)
                 )
             db_conn.commit()
             return True
+
 
 class Attendance(BaseModel):
     def __init__(self):
