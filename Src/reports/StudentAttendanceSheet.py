@@ -45,7 +45,7 @@ class StudentAttendanceSheet(BaseRegistration):
         self.table_frame = tk.Frame(self.reg_window, padx=10, pady=10)
         self.table_frame.pack(fill="both", expand=True)
 
-        columns = ("class_id", "subject", "student_id", "student_name", "date", "status")
+        columns = ("class_id", "subject", "student_id", "student_name", "date", "status","tute")
         self.tree = ttk.Treeview(self.table_frame, columns=columns, show="headings", height=20)
 
         for col in columns:
@@ -111,12 +111,13 @@ class StudentAttendanceSheet(BaseRegistration):
                         "student_id": student["student_id"],
                         "student_name": student["name"],
                         "date": str(selected_date),
-                        "status": "[ ]"
+                        "status": "[ ]",
+                        "tute": "[ ]"
                     }
                     self.sheet_data.append(row)
                     self.tree.insert("", "end", values=(row["class_id"], row["subject"], 
                                                         row["student_id"], row["student_name"], 
-                                                        row["date"], row["status"]))
+                                                        row["date"], row["status"],row["tute"]))
 
             self.export_btn.config(state="normal")
         except Exception as e:

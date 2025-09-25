@@ -141,7 +141,8 @@ class CreateDatabase:
                 FOREIGN KEY (student_id) REFERENCES students(student_id)
                     ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (class_id) REFERENCES classes(class_id)
-                    ON DELETE CASCADE ON UPDATE CASCADE
+                    ON DELETE CASCADE ON UPDATE CASCADE,
+                UNIQUE(student_id, class_id, distribution_date)
             )
             """)
 

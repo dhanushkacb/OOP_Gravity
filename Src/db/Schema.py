@@ -322,30 +322,30 @@ class TuteDistribution(BaseModel):
     def __init__(self):
         super().__init__("tute_distribution")
 
-    def insert(self, student_id, class_id, remarks=None):
+    def insert(self, student_id, class_id,distribution_date, remarks=None):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     INSERT INTO tute_distribution 
-                    (student_id, class_id, remarks) 
-                    VALUES (%s, %s, %s)
+                    (student_id, class_id,distribution_date, remarks) 
+                    VALUES (%s, %s, %s,%s)
                     """,
-                    (student_id, class_id, remarks)
+                    (student_id, class_id,distribution_date, remarks)
                 )
             db_conn.commit()
             return True
 
-    def update(self, tute_id, student_id, class_id, remarks=None):
+    def update(self, tute_id, student_id, class_id, distribution_date,remarks=None):
         with Connection.Database() as db_conn:
             with db_conn.cursor() as db_cursor:
                 db_cursor.execute(
                     """
                     UPDATE tute_distribution 
-                    SET student_id=%s, class_id=%s, remarks=%s 
+                    SET student_id=%s, class_id=%s,distribution_date=%s, remarks=%s 
                     WHERE tute_id=%s
                     """,
-                    (student_id, class_id, remarks, tute_id)
+                    (student_id, class_id, distribution_date,remarks, tute_id)
                 )
             db_conn.commit()
             return True
