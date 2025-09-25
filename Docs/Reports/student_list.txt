@@ -1,4 +1,4 @@
 ID | Name | Year | Month | Contact | Discount | Email | Stream
 --------------------------------------------------------------------------------
-1 | Amali | 2025 | 1 | 0771234567 | 10.00 | amal@gmail.com | PHISICS
-2 | Kamal | 2025 | 2 | 0779876543 | 0.00 | kamal@gmail.com | ICT
+1 | Kamal | 2025 | 2 | 0779876543 | 0.00 | kamal@gmail.com | ICT
+2 | Amali | 2025 | 1 | 0771234567 | 10.00 | amal@gmail.com | PHYSICS

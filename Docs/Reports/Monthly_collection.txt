@@ -1,0 +1,7 @@
+Teacher Income Report
+Month: 9 | Year: 2025
+------------------------------------------------------------
+Teacher ID  Teacher Name             Month   Year    Income    
+------------------------------------------------------------
+1           Anurdha Samaraweera      9       2025    4500.00   
+2           Nilanka Darshana         9       2025    0.00      
