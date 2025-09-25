@@ -35,7 +35,14 @@ class App:
         self.main_frame = tk.Frame(self.main_window, bg="white")
         self.main_frame.pack(fill="both", expand=True)
 
-        tk.Label(self.main_frame, text=f"Welcome {self.role}", font=("Arial", 16)).pack(pady=20)
+        #tk.Label(self.main_frame, text=f"Welcome {self.role}", font=("Arial", 16)).pack(pady=20)
+        # Title label
+        try:
+            self.logo = tk.PhotoImage(file="Src/login/login.png")
+            img_label = tk.Label(self.main_frame, image=self.logo)
+            img_label.pack(pady=20)
+        except Exception as e:
+            Logger.log(f"Image load failed: {e}")
 
     def create_menu(self):
         menubar = tk.Menu(self.main_window)
@@ -44,7 +51,6 @@ class App:
         config_menu = tk.Menu(menubar, tearoff=0)
         config_menu.add_command(label="User Management", command=self.open_user_registration)
         config_menu.add_command(label="Class Room Management", command=self.open_classroom_registration)
-        config_menu.add_command(label="System Settings", command=self.not_implemented)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
 
