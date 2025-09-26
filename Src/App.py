@@ -18,6 +18,8 @@ from Src.reports.StudentRegistrationReport import StudentRegistrationReport
 from Src.ImportStudentPayments import ImportStudentPayments
 from Src.reports.PaymentOutstandingReport import PaymentOutstandingReport
 from Src.reports.TeacherIncomeReport import TeacherIncomeReport
+import os
+from tkinter import ttk
 
 class App:
     def __init__(self, main_window, role):
@@ -35,7 +37,6 @@ class App:
         self.main_frame = tk.Frame(self.main_window, bg="white")
         self.main_frame.pack(fill="both", expand=True)
 
-        #tk.Label(self.main_frame, text=f"Welcome {self.role}", font=("Arial", 16)).pack(pady=20)
         # Title label
         try:
             self.logo = tk.PhotoImage(file="Src/login/login.png")
@@ -44,6 +45,7 @@ class App:
         except Exception as e:
             Logger.log(f"Image load failed: {e}")
 
+
     def create_menu(self):
         menubar = tk.Menu(self.main_window)
 
@@ -51,6 +53,7 @@ class App:
         config_menu = tk.Menu(menubar, tearoff=0)
         config_menu.add_command(label="User Management", command=self.open_user_registration)
         config_menu.add_command(label="Class Room Management", command=self.open_classroom_registration)
+        #config_menu.add_command(label="View Log", command=self.show_log_view)
         if self.role == "Admin":
             menubar.add_cascade(label="Configurations", menu=config_menu)
 
@@ -136,6 +139,13 @@ class App:
 
     def verify_payment(self):
         PaymentVerification()
+
+    def show_log_view(self):
+        log_file_path = "Src/log.txt"
+        if os.path.exists(log_file_path):
+            os.startfile(log_file_path) if os.name == 'nt' else os.system(f'open "{log_file_path}"')
+
+        
 
 
 def start_main_app(root, role):

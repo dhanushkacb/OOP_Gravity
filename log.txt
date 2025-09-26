@@ -1,0 +1,21 @@
+[Time]: 2025-09-26 22:12:25.309937	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 22:12:25.310496	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 22:12:25.738363	[LOG]: Image load failed: 'NoneType' object has no attribute 'pack'
+[Time]: 2025-09-26 22:12:31.361681	[LOG]: User logged in.
+[Time]: 2025-09-26 22:12:45.454525	[LOG]: 1062 (23000): Duplicate entry 'G003' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-26 22:20:17.847146	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 22:20:17.847724	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 22:20:18.065140	[LOG]: Image load failed: 'NoneType' object has no attribute 'pack'
+[Time]: 2025-09-26 22:20:22.370513	[LOG]: User logged in.
+[Time]: 2025-09-26 22:22:44.368662	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 22:22:44.369192	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 22:22:44.720994	[LOG]: Image load failed: 'NoneType' object has no attribute 'pack'
+[Time]: 2025-09-26 22:22:50.821849	[LOG]: User logged in.
+[Time]: 2025-09-26 22:25:27.322711	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 22:25:27.323387	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 22:25:27.528775	[LOG]: Image load failed: 'NoneType' object has no attribute 'pack'
+[Time]: 2025-09-26 22:25:31.768134	[LOG]: User logged in.
+[Time]: 2025-09-26 22:26:16.972647	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 22:26:16.973261	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 22:26:17.174752	[LOG]: Image load failed: 'NoneType' object has no attribute 'pack'
+[Time]: 2025-09-26 22:26:21.407698	[LOG]: User logged in.
