@@ -1,0 +1,2 @@
+name,registration_year,registration_month,contact_no,discount_percent,email,stream,error
+Amali,2025,01q,0771234567,10.0,amal@gmail.com,PHISICS,invalid literal for int() with base 10: '01q'
