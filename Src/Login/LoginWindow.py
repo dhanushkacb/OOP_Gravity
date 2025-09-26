@@ -22,10 +22,13 @@ class LoginWindow:
         # Title label
         try:
             self.logo = tk.PhotoImage(file="Src/login/login.png")
-            img_label = tk.Label(self.form_frame, image=self.logo).grid(row=0, column=0, columnspan=2, pady=(0, 15))
-            img_label.pack(pady=10)
+            img_label = tk.Label(self.form_frame, image=self.logo)
+            img_label.grid(row=0, column=0, columnspan=2, pady=(0, 15))
         except Exception as e:
             Logger.log(f"Image load failed: {e}")
+            tk.Label(self.form_frame, text="GravityCore", font=("Arial", 20, "bold")).grid(
+                row=0, column=0, columnspan=2, pady=(0, 15)
+            )
              
         # Username
         tk.Label(self.form_frame, text="Username:", anchor="w").grid(row=1, column=0, sticky="w", padx=5, pady=5)
