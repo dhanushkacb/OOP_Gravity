@@ -81,7 +81,8 @@ class CreateDatabase:
                 classroom VARCHAR(50),
                 fee DECIMAL(10,2) NOT NULL,
                 FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
-                    ON DELETE CASCADE ON UPDATE CASCADE
+                    ON DELETE CASCADE ON UPDATE CASCADE,
+                UNIQUE(time_slot, classroom)
                 ) 
             """)    
 
@@ -212,11 +213,11 @@ class CreateDatabase:
                         ("UPLOAD_TYPE", "Students"),
                         ("UPLOAD_TYPE", "Payments"),
                         ("UPLOAD_TYPE", "Attendance"),
-                        ("TIME_SLOT","M-6-9"),
-                        ("TIME_SLOT","M-9-12"),
-                        ("TIME_SLOT","A-12-3"),
-                        ("TIME_SLOT","E-3-6"),
-                        ("TIME_SLOT","N-6-9"),
+                        ("TIME_SLOT","Mon-6-9"),
+                        ("TIME_SLOT","Mon-9-12"),
+                        ("TIME_SLOT","Tue-12-3"),
+                        ("TIME_SLOT","Tue-3-6"),
+                        ("TIME_SLOT","Wed-6-9"),
                         ("STREAM", "PHYSICS"),
                         ("STREAM", "BIO"),
                         ("STREAM", "ARTS"),

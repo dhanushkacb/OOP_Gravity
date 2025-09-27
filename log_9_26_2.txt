@@ -1,0 +1,17 @@
+[Time]: 2025-09-27 01:13:47.049529	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:13:47.050096	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:14:51.944928	[LOG]: User logged in.
+[Time]: 2025-09-27 01:15:15.671687	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:15:15.672355	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:16:26.143938	[LOG]: User logged in.
+[Time]: 2025-09-27 01:16:54.770172	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:16:54.770851	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:16:59.032390	[LOG]: User logged in.
+[Time]: 2025-09-27 01:17:05.943779	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:17:05.944298	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:17:10.126364	[LOG]: User logged in.
+[Time]: 2025-09-27 01:22:55.583916	[LOG]: 1062 (23000): Duplicate entry 'D001' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-27 01:37:27.147658	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:37:27.148427	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:37:33.331504	[LOG]: User logged in.
+[Time]: 2025-09-27 01:43:46.226003	[LOG]: 1062 (23000): Duplicate entry 'Mon-6-9-G001' for key 'classes.uq_classes_tim_cls'
