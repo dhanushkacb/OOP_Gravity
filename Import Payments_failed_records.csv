@@ -1,0 +1,2 @@
+class_id,student_id,year,month,amount,method,remarks,error
+1,1,2025,8,4500,Online,Paid,"1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`gravity_db`.`payments`, CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE)"

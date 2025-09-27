@@ -1,0 +1,42 @@
+[Time]: 2025-09-27 08:05:19.598593	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 08:05:19.599128	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 08:05:24.019803	[LOG]: User logged in.
+[Time]: 2025-09-27 08:19:44.526802	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 08:19:44.527276	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 08:19:53.077910	[LOG]: User logged in.
+[Time]: 2025-09-27 08:41:43.780931	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 08:41:43.781514	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 08:49:46.843538	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 08:49:46.844070	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:12:23.636952	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:12:23.637615	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:12:47.718964	[LOG]: User logged in.
+[Time]: 2025-09-27 09:13:01.287093	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:13:01.287722	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:13:08.412852	[LOG]: User logged in.
+[Time]: 2025-09-27 09:13:33.776501	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:13:33.777157	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:13:38.504300	[LOG]: User logged in.
+[Time]: 2025-09-27 09:13:47.017785	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:13:47.018483	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:13:51.765730	[LOG]: User logged in.
+[Time]: 2025-09-27 09:14:49.788839	[LOG]: 1062 (23000): Duplicate entry 'D001' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-27 09:17:49.848340	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:17:49.848983	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:18:09.151468	[LOG]: User logged in.
+[Time]: 2025-09-27 09:18:42.813189	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:18:42.813919	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:18:47.200315	[LOG]: User logged in.
+[Time]: 2025-09-27 09:19:15.346583	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:19:15.347237	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:19:29.822806	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:19:29.823521	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:19:33.601225	[LOG]: User logged in.
+[Time]: 2025-09-27 09:22:52.975943	[LOG]: 1062 (23000): Duplicate entry 'D001' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-27 09:23:50.259538	[LOG]: 1062 (23000): Duplicate entry 'D001' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-27 09:31:15.781781	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:31:15.782366	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:31:20.043686	[LOG]: User logged in.
+[Time]: 2025-09-27 09:35:31.611111	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 09:35:31.611807	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 09:36:30.901383	[LOG]: User logged in.

@@ -152,7 +152,7 @@ class StudentAttendanceSheet(BaseRegistration):
             )
 
             lines = [
-                f"{s['student_id']}\t\t\t| {s['student_name']}\t\t\t\t\t| {s['status']}\t\t| {s['tute']}"
+                f"{s['student_id']}\t\t| {s['student_name']}\t\t\t\t| {s['status']}\t\t| {s['tute']}"
                 for s in self.sheet_data
             ]
 

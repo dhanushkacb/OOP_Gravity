@@ -1,0 +1,53 @@
+[Time]: 2025-09-26 23:14:49.023860	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:14:49.024295	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:15:13.516817	[LOG]: User logged in.
+[Time]: 2025-09-26 23:16:48.639355	[LOG]: 1062 (23000): Duplicate entry 'G0003' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-26 23:17:33.167084	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:17:33.167416	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:17:58.542086	[LOG]: User logged in.
+[Time]: 2025-09-26 23:22:55.336531	[LOG]: 1062 (23000): Duplicate entry '1-1' for key 'enrollments.student_id'
+[Time]: 2025-09-26 23:23:10.966182	[LOG]: 1062 (23000): Duplicate entry '3-1' for key 'enrollments.student_id'
+[Time]: 2025-09-26 23:29:51.793180	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:29:51.793943	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:29:56.618913	[LOG]: User logged in.
+[Time]: 2025-09-26 23:32:48.859968	[LOG]: 1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:40:08.619660	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:40:08.620779	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:40:12.810810	[LOG]: User logged in.
+[Time]: 2025-09-26 23:41:02.411736	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:41:02.412574	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:41:06.839297	[LOG]: User logged in.
+[Time]: 2025-09-26 23:45:11.952236	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:45:11.953095	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:45:15.881793	[LOG]: User logged in.
+[Time]: 2025-09-26 23:45:25.457936	[LOG]: Default system settings initialized.
+[Time]: 2025-09-26 23:45:25.458493	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-26 23:45:29.276575	[LOG]: User logged in.
+[Time]: 2025-09-26 23:46:09.699358	[LOG]: 1062 (23000): Duplicate entry 'G0003' for key 'classrooms.PRIMARY'
+[Time]: 2025-09-26 23:54:00.986794	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '1', 'year': '2025', 'month': '8', 'amount': '4500', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:00.999775	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '3', 'year': '2025', 'month': '8', 'amount': '4750', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '3-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '3-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:01.009454	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '2', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:01.024756	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '4', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:36.604055	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '1', 'year': '2025', 'month': '8', 'amount': '4500', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:36.629566	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '2', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:54:36.639319	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '4', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-26 23:57:41.776651	[LOG]: Failed to insert record: {'student_id': '1', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '1', 'error': "1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'attendance.student_id'"} -> 1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'attendance.student_id'
+[Time]: 2025-09-26 23:57:41.798388	[LOG]: Failed to insert tute: {'student_id': '1', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '1', 'error': "1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'tute_distribution.student_id'"} -> 1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'tute_distribution.student_id'
+[Time]: 2025-09-26 23:57:41.810399	[LOG]: Failed to insert record: {'student_id': '2', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '0', 'error': "1062 (23000): Duplicate entry '2-1-2025-09-20' for key 'attendance.student_id'"} -> 1062 (23000): Duplicate entry '2-1-2025-09-20' for key 'attendance.student_id'
+[Time]: 2025-09-26 23:57:41.835419	[LOG]: Failed to insert record: {'student_id': '3', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '1', 'error': "1062 (23000): Duplicate entry '3-1-2025-09-20' for key 'attendance.student_id'"} -> 1062 (23000): Duplicate entry '3-1-2025-09-20' for key 'attendance.student_id'
+[Time]: 2025-09-26 23:57:41.853062	[LOG]: Failed to insert record: {'student_id': '4', 'class_id': '1', 'session_date': '2025-09-20', 'status': '0', 'tute': '0', 'error': "1062 (23000): Duplicate entry '4-1-2025-09-20' for key 'attendance.student_id'"} -> 1062 (23000): Duplicate entry '4-1-2025-09-20' for key 'attendance.student_id'
+[Time]: 2025-09-26 23:59:08.507209	[LOG]: Failed to insert tute: {'student_id': '1', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '1', 'error': "1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'tute_distribution.student_id'"} -> 1062 (23000): Duplicate entry '1-1-2025-09-20' for key 'tute_distribution.student_id'
+[Time]: 2025-09-26 23:59:08.535927	[LOG]: Failed to insert tute: {'student_id': '3', 'class_id': '1', 'session_date': '2025-09-20', 'status': '1', 'tute': '1', 'error': "1062 (23000): Duplicate entry '3-1-2025-09-20' for key 'tute_distribution.student_id'"} -> 1062 (23000): Duplicate entry '3-1-2025-09-20' for key 'tute_distribution.student_id'
+[Time]: 2025-09-27 00:10:33.599259	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 00:10:33.600430	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 00:10:39.230732	[LOG]: User logged in.
+[Time]: 2025-09-27 00:10:57.082506	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '1', 'year': '2025', 'month': '8', 'amount': '4500', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '1-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-27 00:10:57.094896	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '3', 'year': '2025', 'month': '8', 'amount': '4750', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '3-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '3-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-27 00:10:57.103035	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '2', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '2-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-27 00:10:57.111826	[LOG]: Failed to insert payment: {'class_id': '1', 'student_id': '4', 'year': '2025', 'month': '8', 'amount': '5000', 'method': 'Online', 'remarks': 'Paid', 'error': "1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'"} -> 1062 (23000): Duplicate entry '4-1-8-2025' for key 'payments.student_id'
+[Time]: 2025-09-27 00:45:44.860452	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 00:45:44.861413	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 00:45:49.700203	[LOG]: User logged in.
+[Time]: 2025-09-27 01:00:40.680238	[LOG]: Default system settings initialized.
+[Time]: 2025-09-27 01:00:40.681128	[LOG]: Database and tables created successfully.
+[Time]: 2025-09-27 01:00:48.325075	[LOG]: User logged in.

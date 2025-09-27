@@ -1,0 +1,8 @@
+Teacher Income Report
+Month: 8 | Year: 2025
+------------------------------------------------------------
+Teacher ID  Teacher Name             Month   Year    Income    
+------------------------------------------------------------
+1           Anuradha                 8       2025    14750.00  
+2           Dissanayake              8       2025    0.00      
+3           Walpola                  8       2025    0.00      

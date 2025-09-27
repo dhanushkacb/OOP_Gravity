@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import csv
+from Src.DiscountHandler import DiscountHandler
 from Src.BaseRegistration import BaseRegistration
-from Src.db.Schema import Payments
+from Src.db.Schema import Classes, Payments
 from Src.log.Logger import Logger
 
 
@@ -93,6 +94,11 @@ class ImportStudentPayments(BaseRegistration):
 
             for row in self.preview_data:
                 try:
+                    student=row.get("student_id")
+                    classID=row.get("class_id")
+                    cls = Classes().select_by_id(classID)
+                    fee = float(cls.get("fee", 0.0)) if cls else 0.0
+                    discount=DiscountHandler().calculate_discount(student, fee)
                     self._model.insert(
                         student_id=row.get("student_id"),
                         class_id=row.get("class_id"),
@@ -101,7 +107,7 @@ class ImportStudentPayments(BaseRegistration):
                         amount=row.get("amount"),
                         payment_method=row.get("method"),
                         remarks=row.get("remarks"),
-                        discount_applied=0.0  # you can add discount column later if needed
+                        discount_applied=discount
                     )
                     success_count += 1
                 except Exception as e:
